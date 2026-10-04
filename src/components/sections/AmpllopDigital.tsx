@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { weddingData } from "@/lib/wedding-data";
 
@@ -282,6 +282,26 @@ function BankCard({ bank, accountNumber, accountName, delay = 0 }: BankCardProps
 }
 
 export default function AmpllopDigital() {
+  const [bankAccounts, setBankAccounts] = useState(weddingData.bankAccounts);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data.bankAccounts) && data.data.bankAccounts.length > 0) {
+          setBankAccounts(
+            data.data.bankAccounts.map((b: any) => ({
+              bank: b.bank,
+              accountNumber: b.account_number,
+              accountName: b.account_name,
+              logo: b.logo || b.bank,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section
       id="amplop"
@@ -399,9 +419,9 @@ export default function AmpllopDigital() {
             flexWrap: "wrap",
           }}
         >
-          {weddingData.bankAccounts.map((account, idx) => (
+          {bankAccounts.map((account, idx) => (
             <BankCard
-              key={account.accountNumber}
+              key={`${account.bank}-${account.accountNumber}-${idx}`}
               bank={account.bank}
               accountNumber={account.accountNumber}
               accountName={account.accountName}

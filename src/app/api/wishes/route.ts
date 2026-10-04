@@ -66,3 +66,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+// DELETE: Delete a wish by ID
+export async function DELETE(request: Request) {
+  if (!sql) {
+    return NextResponse.json({ success: false, message: "DATABASE_URL is not set" }, { status: 400 });
+  }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ success: false, message: "ID ucapan tidak ditemukan" }, { status: 400 });
+    }
+
+    await sql`DELETE FROM wishes WHERE id = ${parseInt(id)}`;
+
+    return NextResponse.json({ success: true, message: "Ucapan berhasil dihapus" });
+  } catch (error: any) {
+    console.error("Neon DB DELETE error:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}

@@ -7,6 +7,7 @@ import HeroSection from "@/components/sections/HeroSection";
 import CountdownTimer from "@/components/sections/CountdownTimer";
 import EventDetails from "@/components/sections/EventDetails";
 import MapSection from "@/components/sections/MapSection";
+import GallerySection from "@/components/sections/GallerySection";
 import AmpllopDigital from "@/components/sections/AmpllopDigital";
 import WishesWall from "@/components/sections/WishesWall";
 import ClosingSection from "@/components/sections/ClosingSection";
@@ -47,22 +48,25 @@ export default function HomePage() {
             {/* 1. Hero — Nama & Tanggal */}
             <HeroSection />
 
-            {/* 2. Countdown Timer */}
+            {/* 2. Galeri Foto Bahagia */}
+            <GallerySection />
+
+            {/* 3. Countdown Timer */}
             <CountdownTimer />
 
-            {/* 3. Detail Acara (Akad & Resepsi) */}
+            {/* 4. Detail Acara (Akad & Resepsi) */}
             <EventDetails />
 
-            {/* 4. Peta Lokasi GIS */}
+            {/* 5. Peta Lokasi GIS */}
             <MapSection />
 
-            {/* 5. Amplop Digital */}
+            {/* 6. Amplop Digital */}
             <AmpllopDigital />
 
-            {/* 6. Ucapan & Doa */}
+            {/* 7. Ucapan & Doa */}
             <WishesWall />
 
-            {/* 7. Penutup */}
+            {/* 8. Penutup */}
             <ClosingSection />
           </motion.main>
         )}

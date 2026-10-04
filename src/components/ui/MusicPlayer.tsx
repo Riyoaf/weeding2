@@ -13,7 +13,19 @@ export default function MusicPlayer({
   src = "/kusuma_jaya.mp3",
 }: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [musicSrc, setMusicSrc] = useState(src);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data.settings?.music_url) {
+          setMusicSrc(data.data.settings.music_url);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Trigger play when user opens invitation
   useEffect(() => {
@@ -23,7 +35,7 @@ export default function MusicPlayer({
         .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
     }
-  }, [autoPlayTrigger]);
+  }, [autoPlayTrigger, musicSrc]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -43,7 +55,7 @@ export default function MusicPlayer({
     <>
       <audio
         ref={audioRef}
-        src={src}
+        src={musicSrc}
         loop
         preload="auto"
         style={{ display: "none" }}

@@ -11,12 +11,12 @@ interface TimeLeft {
   seconds: number;
 }
 
-function calculateTimeLeft(): TimeLeft {
-  const target = new Date(weddingData.countdownTarget).getTime();
+function calculateTimeLeft(targetStr: string): TimeLeft {
+  const target = new Date(targetStr).getTime();
   const now = new Date().getTime();
   const diff = target - now;
 
-  if (diff <= 0) {
+  if (isNaN(diff) || diff <= 0) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   }
 
@@ -28,24 +28,6 @@ function calculateTimeLeft(): TimeLeft {
   };
 }
 
-function buildCalendarUrl(): string {
-  const startDate = new Date(weddingData.countdownTarget);
-  const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
-
-  const fmt = (d: Date) =>
-    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: `Pernikahan ${weddingData.groom.name} & ${weddingData.bride.name}`,
-    dates: `${fmt(startDate)}/${fmt(endDate)}`,
-    details: `Pernikahan ${weddingData.groom.fullName} & ${weddingData.bride.fullName}\n\n${weddingData.venue.name}\n${weddingData.venue.address}`,
-    location: weddingData.venue.address,
-  });
-
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
-}
-
 const UNITS = [
   { key: "days" as const, label: "Hari" },
   { key: "hours" as const, label: "Jam" },
@@ -54,22 +36,77 @@ const UNITS = [
 ];
 
 export default function CountdownTimer() {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
+  const [targetDateStr, setTargetDateStr] = useState<string>(weddingData.countdownTarget);
+  const [title, setTitle] = useState<string>("Menuju Hari Bahagia");
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(weddingData.countdownTarget));
   const [hasPassed, setHasPassed] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [meta, setMeta] = useState({
+    groom: weddingData.groom.name,
+    bride: weddingData.bride.name,
+    venueName: weddingData.venue.name,
+    venueAddress: weddingData.venue.address,
+  });
 
   useEffect(() => {
     setMounted(true);
-    const timer = setInterval(() => {
-      const tl = calculateTimeLeft();
+
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data?.settings) {
+          const s = data.data.settings;
+          const target = s.countdown_target || weddingData.countdownTarget;
+          setTargetDateStr(target);
+          if (s.countdown_title) setTitle(s.countdown_title);
+          setMeta({
+            groom: s.groom_name || weddingData.groom.name,
+            bride: s.bride_name || weddingData.bride.name,
+            venueName: s.venue_name || weddingData.venue.name,
+            venueAddress: s.venue_address || weddingData.venue.address,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const tl = calculateTimeLeft(targetDateStr);
       setTimeLeft(tl);
       if (tl.days === 0 && tl.hours === 0 && tl.minutes === 0 && tl.seconds === 0) {
         setHasPassed(true);
-        clearInterval(timer);
+      } else {
+        setHasPassed(false);
       }
-    }, 1000);
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [targetDateStr]);
+
+  const buildCalendarUrl = (): string => {
+    try {
+      const startDate = new Date(targetDateStr);
+      const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
+
+      const fmt = (d: Date) =>
+        d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+
+      const params = new URLSearchParams({
+        action: "TEMPLATE",
+        text: `Pernikahan ${meta.groom} & ${meta.bride}`,
+        dates: `${fmt(startDate)}/${fmt(endDate)}`,
+        details: `Pernikahan ${meta.groom} & ${meta.bride}\n\n${meta.venueName}\n${meta.venueAddress}`,
+        location: meta.venueAddress,
+      });
+
+      return `https://calendar.google.com/calendar/render?${params.toString()}`;
+    } catch {
+      return "#";
+    }
+  };
 
   return (
     <section
@@ -82,8 +119,6 @@ export default function CountdownTimer() {
         textAlign: "center",
       }}
     >
-
-
       <div className="section-container" style={{ position: "relative", zIndex: 1 }}>
         {/* Countdown Card Container */}
         <motion.div
@@ -120,7 +155,7 @@ export default function CountdownTimer() {
           {/* Title */}
           <h2
             style={{
-              fontFamily: "'Cookie', cursive, serif",
+              fontFamily: "var(--font-cookie), 'Cookie', cursive, serif",
               fontSize: "2.4rem",
               fontWeight: 400,
               color: "#2D3748",
@@ -129,20 +164,20 @@ export default function CountdownTimer() {
               zIndex: 2,
             }}
           >
-            {hasPassed ? "Hari Bahagia Telah Tiba" : "Menuju Hari Bahagia"}
+            {hasPassed ? "Hari Bahagia Telah Tiba" : title}
           </h2>
 
           {/* Countdown Display Row */}
           {hasPassed ? (
             <p
               style={{
-                fontFamily: "'Cookie', cursive, serif",
+                fontFamily: "var(--font-cookie), 'Cookie', cursive, serif",
                 fontSize: "1.8rem",
                 color: "#4A5D52",
                 marginBottom: "2rem",
               }}
             >
-              ✨ Acara telah berlangsung ✨
+              Acara telah berlangsung
             </p>
           ) : (
             <div

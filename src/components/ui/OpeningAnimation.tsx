@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { weddingData } from "@/lib/wedding-data";
 
@@ -10,6 +10,38 @@ interface OpeningAnimationProps {
 
 export default function OpeningAnimation({ onOpen }: OpeningAnimationProps) {
   const [isOpening, setIsOpening] = useState(false);
+  const [coverData, setCoverData] = useState({
+    badgeText: "Pernikahan dari",
+    photoUrl: "/dita 2.jpeg",
+    coupleName: `${weddingData.groom.name} & ${weddingData.bride.name}`,
+    dateText: `${weddingData.akad.displayDay}, ${weddingData.akad.displayDate}`,
+    bgUrl: "/cover-bg.jpg",
+  });
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data?.settings) {
+          const s = data.data.settings;
+          const couple =
+            s.cover_couple_name?.trim() ||
+            (s.groom_name && s.bride_name ? `${s.groom_name} & ${s.bride_name}` : `${weddingData.groom.name} & ${weddingData.bride.name}`);
+          const date =
+            s.cover_date_text?.trim() ||
+            (s.akad_display_day && s.akad_display_date ? `${s.akad_display_day}, ${s.akad_display_date}` : `${weddingData.akad.displayDay}, ${weddingData.akad.displayDate}`);
+
+          setCoverData({
+            badgeText: s.cover_badge_text || "Pernikahan dari",
+            photoUrl: s.cover_photo_url || "/dita 2.jpeg",
+            coupleName: couple,
+            dateText: date,
+            bgUrl: s.cover_bg_url || "/cover-bg.jpg",
+          });
+        }
+      })
+      .catch((err) => console.error("Error loading cover settings:", err));
+  }, []);
 
   const handleOpen = () => {
     setIsOpening(true);
@@ -33,7 +65,7 @@ export default function OpeningAnimation({ onOpen }: OpeningAnimationProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundImage: "url('/cover-bg.jpg')",
+            backgroundImage: `url('${coverData.bgUrl}')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -99,7 +131,7 @@ export default function OpeningAnimation({ onOpen }: OpeningAnimationProps) {
                 marginBottom: "1.25rem",
               }}
             >
-              Pernikahan dari
+              {coverData.badgeText}
             </motion.p>
 
             {/* Profile Avatar with Enlarged Rounded Frame Overlay */}
@@ -117,10 +149,10 @@ export default function OpeningAnimation({ onOpen }: OpeningAnimationProps) {
                 justifyContent: "center",
               }}
             >
-              {/* Profile Photo (dita 2.jpeg) - Shifted Up Slightly */}
+              {/* Profile Photo - Dynamic from settings */}
               <img
-                src="/dita 2.jpeg"
-                alt={`Profil ${weddingData.groom.name} & ${weddingData.bride.name}`}
+                src={coverData.photoUrl}
+                alt={`Profil ${coverData.coupleName}`}
                 style={{
                   position: "absolute",
                   top: "45%",
@@ -167,7 +199,7 @@ export default function OpeningAnimation({ onOpen }: OpeningAnimationProps) {
                 marginBottom: "0.75rem",
               }}
             >
-              {weddingData.groom.name} &amp; {weddingData.bride.name}
+              {coverData.coupleName}
             </motion.h1>
 
             {/* Tanggal di Depan (Montserrat) */}
@@ -183,7 +215,7 @@ export default function OpeningAnimation({ onOpen }: OpeningAnimationProps) {
                 fontWeight: 500,
               }}
             >
-              {weddingData.akad.displayDay}, {weddingData.akad.displayDate}
+              {coverData.dateText}
             </motion.p>
 
             {/* Tombol Buka Undangan */}
