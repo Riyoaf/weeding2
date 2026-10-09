@@ -99,46 +99,26 @@ export default function GallerySection() {
           margin: "0 auto",
         }}
       >
-        {/* Soft Glass Card Wrapper */}
+        {/* Full-frame Gallery Wrapper (No outer card background/border) */}
         <motion.div
-          initial={{ opacity: 0, y: 35, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           style={{
-            background: "rgba(248, 246, 242, 0.94)",
-            backdropFilter: "blur(12px)",
-            borderRadius: 24,
-            padding: "2.75rem 1.5rem 2.25rem",
-            boxShadow: "0 12px 36px rgba(0, 0, 0, 0.05)",
-            border: "1px solid rgba(201, 169, 110, 0.3)",
             position: "relative",
-            overflow: "hidden",
+            width: "100%",
           }}
         >
-          {/* Subtle Top Right Soft Sage Accent Circle */}
-          <div
-            style={{
-              position: "absolute",
-              top: -20,
-              right: -20,
-              width: 140,
-              height: 140,
-              borderRadius: "50%",
-              background: "rgba(225, 235, 228, 0.55)",
-              pointerEvents: "none",
-            }}
-          />
-
           {/* Header Section */}
-          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "clamp(1.2rem, 3.5vw, 1.85rem)" }}>
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "0.75rem",
-                marginBottom: "0.5rem",
+                marginBottom: "0.4rem",
               }}
             >
               <div
@@ -151,7 +131,7 @@ export default function GallerySection() {
               <p
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
-                  fontSize: "0.7rem",
+                  fontSize: "clamp(0.65rem, 1.8vw, 0.72rem)",
                   fontWeight: 600,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
@@ -173,9 +153,9 @@ export default function GallerySection() {
             <h2
               style={{
                 fontFamily: "var(--font-cookie), 'Cookie', cursive, serif",
-                fontSize: "clamp(2.4rem, 6vw, 3.4rem)",
+                fontSize: "clamp(2rem, 5.5vw, 3rem)",
                 fontWeight: 400,
-                color: "#2D3748",
+                color: "#F5F0E6",
                 margin: 0,
                 lineHeight: 1.2,
               }}
@@ -184,7 +164,7 @@ export default function GallerySection() {
             </h2>
           </div>
 
-          {/* Featured Large Top Card (Clean photo without title overlay) */}
+          {/* Featured Large Top Photo (Fullframe & Padat) */}
           {featuredItem && (
             <motion.div
               whileHover={{ scale: 1.015 }}
@@ -197,14 +177,14 @@ export default function GallerySection() {
               style={{
                 position: "relative",
                 width: "100%",
-                height: "clamp(240px, 60vw, 360px)",
-                borderRadius: 20,
+                height: "clamp(220px, 60vw, 360px)",
+                borderRadius: "clamp(12px, 2.5vw, 18px)",
                 overflow: "hidden",
-                marginBottom: "1.1rem",
+                marginBottom: "clamp(6px, 1.8vw, 10px)",
                 cursor: "pointer",
-                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.10)",
-                border: "1px solid rgba(0, 0, 0, 0.06)",
-                background: "#E2E8F0",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
+                border: "1px solid rgba(201, 169, 110, 0.3)",
+                background: "#161616",
               }}
             >
               <img
@@ -221,32 +201,34 @@ export default function GallerySection() {
             </motion.div>
           )}
 
-          {/* Grid Cards (Clean photos without title overlays) */}
+          {/* Grid Photos (Fullframe & Padat, tight gap) */}
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "1.1rem",
+              gap: "clamp(6px, 1.8vw, 10px)",
             }}
           >
-            {gridItems.map((item) => {
+            {gridItems.map((item, idx) => {
               const itemIndex = items.findIndex((i) => i.id === item.id);
+              const isLastOdd = idx === gridItems.length - 1 && gridItems.length % 2 !== 0;
               return (
                 <motion.div
                   key={item.id}
-                  whileHover={{ scale: 1.025 }}
+                  whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.25 }}
                   onClick={() => setActiveItemIndex(itemIndex)}
                   style={{
                     position: "relative",
                     width: "100%",
-                    height: "clamp(160px, 42vw, 220px)",
-                    borderRadius: 18,
+                    gridColumn: isLastOdd ? "span 2" : undefined,
+                    height: isLastOdd ? "clamp(180px, 50vw, 280px)" : "clamp(160px, 44vw, 240px)",
+                    borderRadius: "clamp(12px, 2.5vw, 18px)",
                     overflow: "hidden",
                     cursor: "pointer",
-                    background: "#E2E8F0",
-                    boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
-                    border: "1px solid rgba(0, 0, 0, 0.06)",
+                    background: "#161616",
+                    boxShadow: "0 6px 20px rgba(0, 0, 0, 0.35)",
+                    border: "1px solid rgba(201, 169, 110, 0.3)",
                   }}
                 >
                   <img
@@ -256,7 +238,7 @@ export default function GallerySection() {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
-                      objectPosition: "center center",
+                      objectPosition: isLastOdd ? "center 25%" : "center center",
                       transition: "transform 0.4s ease",
                     }}
                   />

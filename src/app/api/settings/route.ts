@@ -11,7 +11,9 @@ async function ensureExtraColumns() {
       ADD COLUMN IF NOT EXISTS cover_date_text TEXT DEFAULT '',
       ADD COLUMN IF NOT EXISTS cover_bg_url TEXT DEFAULT '/cover-bg.jpg',
       ADD COLUMN IF NOT EXISTS countdown_target TEXT DEFAULT '2026-09-12T10:00:00',
-      ADD COLUMN IF NOT EXISTS countdown_title TEXT DEFAULT 'Menuju Hari Bahagia'
+      ADD COLUMN IF NOT EXISTS countdown_title TEXT DEFAULT 'Menuju Hari Bahagia',
+      ADD COLUMN IF NOT EXISTS closing_photo_url TEXT DEFAULT '/dita.jpeg',
+      ADD COLUMN IF NOT EXISTS music_start_second INTEGER DEFAULT 0
     `;
   } catch (e) {
     console.error("Migration error (safe to ignore if already altered):", e);
@@ -82,7 +84,11 @@ export async function PUT(request: Request) {
       cover_bg_url = "/cover-bg.jpg",
       countdown_target = "2026-09-12T10:00:00",
       countdown_title = "Menuju Hari Bahagia",
+      closing_photo_url = "/dita.jpeg",
+      music_start_second = 0,
     } = body;
+
+    const startSec = Math.max(0, parseInt(music_start_second, 10) || 0);
 
     await sql`
       UPDATE wedding_settings
@@ -111,6 +117,7 @@ export async function PUT(request: Request) {
         closing_quote_text = ${closing_quote_text},
         closing_quote_source = ${closing_quote_source},
         music_url = ${music_url},
+        music_start_second = ${startSec},
         cover_photo_url = ${cover_photo_url},
         cover_badge_text = ${cover_badge_text},
         cover_couple_name = ${cover_couple_name},
@@ -118,6 +125,7 @@ export async function PUT(request: Request) {
         cover_bg_url = ${cover_bg_url},
         countdown_target = ${countdown_target},
         countdown_title = ${countdown_title},
+        closing_photo_url = ${closing_photo_url},
         updated_at = NOW()
       WHERE id = 1
     `;

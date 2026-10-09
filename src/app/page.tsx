@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import OpeningAnimation from "@/components/ui/OpeningAnimation";
 import HeroSection from "@/components/sections/HeroSection";
@@ -12,65 +12,83 @@ import AmpllopDigital from "@/components/sections/AmpllopDigital";
 import WishesWall from "@/components/sections/WishesWall";
 import ClosingSection from "@/components/sections/ClosingSection";
 import MusicPlayer from "@/components/ui/MusicPlayer";
+import FlyingButterflies from "@/components/ui/FlyingButterflies";
 
 export default function HomePage() {
+  const [isMusicTriggered, setIsMusicTriggered] = useState(false);
   const [isOpened, setIsOpened] = useState(false);
+
+  // Lock body scroll while cover is visible, unlock when opened
+  useEffect(() => {
+    if (!isOpened) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpened]);
 
   return (
     <>
-      {/* Opening Animation Overlay */}
+      {/* Opening Animation Overlay with 3D Envelope Reveal */}
       <AnimatePresence>
         {!isOpened && (
-          <OpeningAnimation onOpen={() => setIsOpened(true)} />
+          <OpeningAnimation
+            onStartOpen={() => setIsMusicTriggered(true)}
+            onOpenComplete={() => setIsOpened(true)}
+            onOpen={() => setIsMusicTriggered(true)}
+          />
         )}
       </AnimatePresence>
 
       {/* Floating Background Music Controller */}
-      <MusicPlayer autoPlayTrigger={isOpened} src="/kusuma_jaya.mp3" />
+      <MusicPlayer autoPlayTrigger={isMusicTriggered || isOpened} />
 
-      {/* Main Invitation Content */}
-      <AnimatePresence>
-        {isOpened && (
-          <motion.main
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            style={{
-              backgroundImage: "url('/bg.jpg')",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center center",
-              backgroundAttachment: "fixed",
-              backgroundColor: "#FCFBF7",
-              minHeight: "100vh",
-            }}
-          >
-            {/* 1. Hero — Nama & Tanggal */}
-            <HeroSection />
+      {/* Main Invitation Content - Always 100% HD with crisp native resolution */}
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isOpened ? 1 : 0 }}
+        transition={{ duration: 0.85, ease: "easeOut" }}
+        style={{
+          backgroundImage: "url('/baground.png')",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center center",
+          backgroundAttachment: "fixed",
+          backgroundColor: "#111111",
+          minHeight: "100vh",
+          pointerEvents: isOpened ? "auto" : "none",
+        }}
+      >
+        {/* Ambient Flying Golden Butterflies in Background */}
+        {isOpened && <FlyingButterflies />}
 
-            {/* 2. Galeri Foto Bahagia */}
-            <GallerySection />
+        {/* 1. Hero — Nama & Tanggal */}
+        <HeroSection />
 
-            {/* 3. Countdown Timer */}
-            <CountdownTimer />
+        {/* 2. Galeri Foto Bahagia */}
+        <GallerySection />
 
-            {/* 4. Detail Acara (Akad & Resepsi) */}
-            <EventDetails />
+        {/* 3. Countdown Timer */}
+        <CountdownTimer />
 
-            {/* 5. Peta Lokasi GIS */}
-            <MapSection />
+        {/* 4. Detail Acara (Akad & Resepsi) */}
+        <EventDetails />
 
-            {/* 6. Amplop Digital */}
-            <AmpllopDigital />
+        {/* 5. Peta Lokasi GIS */}
+        <MapSection />
 
-            {/* 7. Ucapan & Doa */}
-            <WishesWall />
+        {/* 6. Amplop Digital */}
+        <AmpllopDigital />
 
-            {/* 8. Penutup */}
-            <ClosingSection />
-          </motion.main>
-        )}
-      </AnimatePresence>
+        {/* 7. Ucapan & Doa */}
+        <WishesWall />
+
+        {/* 8. Penutup */}
+        <ClosingSection />
+      </motion.main>
     </>
   );
 }

@@ -10,56 +10,147 @@ interface MusicPlayerProps {
 
 export default function MusicPlayer({
   autoPlayTrigger = false,
-  src = "/kusuma_jaya.mp3",
+  src = "/api/music",
 }: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [musicSrc, setMusicSrc] = useState(src);
+  const [musicSrc, setMusicSrc] = useState<string>("");
+  const [startSecond, setStartSecond] = useState(0);
+  const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hasSeekedRef = useRef(false);
 
   useEffect(() => {
+    let isMounted = true;
     fetch("/api/settings")
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.data.settings?.music_url) {
-          setMusicSrc(data.data.settings.music_url);
+        if (!isMounted) return;
+        if (data.success && data.data.settings) {
+          if (data.data.settings.music_url) {
+            setMusicSrc(`/api/music?file=${encodeURIComponent(data.data.settings.music_url)}`);
+          } else {
+            setMusicSrc(src);
+          }
+          if (data.data.settings.music_start_second !== undefined && data.data.settings.music_start_second !== null) {
+            const sec = Math.max(0, parseInt(data.data.settings.music_start_second, 10) || 0);
+            setStartSecond(sec);
+          }
+        } else {
+          setMusicSrc(src);
         }
+        setIsSettingsLoaded(true);
       })
-      .catch(() => {});
+      .catch(() => {
+        if (isMounted) {
+          setMusicSrc(src);
+          setIsSettingsLoaded(true);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [src]);
+
+  useEffect(() => {
+    hasSeekedRef.current = false;
+  }, [musicSrc, startSecond]);
+
+  const applySeek = () => {
+    const audio = audioRef.current;
+    if (!audio || startSecond <= 0 || hasSeekedRef.current) return;
+
+    if (audio.readyState >= 1) {
+      try {
+        audio.currentTime = startSecond;
+        hasSeekedRef.current = true;
+      } catch (e) {
+        console.warn("Seek error:", e);
+      }
+    } else {
+      const onReady = () => {
+        audio.removeEventListener("loadedmetadata", onReady);
+        try {
+          audio.currentTime = startSecond;
+          hasSeekedRef.current = true;
+        } catch (_) {}
+      };
+      audio.addEventListener("loadedmetadata", onReady, { once: true });
+    }
+  };
+
+  const playAudio = async () => {
+    const audio = audioRef.current;
+    if (!audio || !musicSrc) return;
+
+    try {
+      applySeek();
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        await playPromise;
+      }
+      setIsPlaying(true);
+      applySeek();
+    } catch (err: unknown) {
+      // AbortError is a benign browser behavior when media changes or component unmounts
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
+      console.warn("Audio play prevented or failed:", err);
+      setIsPlaying(false);
+    }
+  };
+
+  // Trigger play when user opens invitation and settings are ready
+  useEffect(() => {
+    if (autoPlayTrigger && isSettingsLoaded && audioRef.current && musicSrc) {
+      playAudio();
+    }
+  }, [autoPlayTrigger, isSettingsLoaded, musicSrc]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
   }, []);
 
-  // Trigger play when user opens invitation
-  useEffect(() => {
-    if (autoPlayTrigger && audioRef.current) {
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
-    }
-  }, [autoPlayTrigger, musicSrc]);
-
   const togglePlay = () => {
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
 
     if (isPlaying) {
-      audioRef.current.pause();
+      audio.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
+      playAudio();
+    }
+  };
+
+  const handleEnded = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      try {
+        audio.currentTime = startSecond > 0 ? startSecond : 0;
+        audio.play().catch(() => {});
+      } catch (_) {}
     }
   };
 
   return (
     <>
-      <audio
-        ref={audioRef}
-        src={musicSrc}
-        loop
-        preload="auto"
-        style={{ display: "none" }}
-      />
+      {musicSrc ? (
+        <audio
+          ref={audioRef}
+          src={musicSrc}
+          onLoadedMetadata={applySeek}
+          onEnded={handleEnded}
+          preload="none"
+          style={{ display: "none" }}
+        />
+      ) : null}
 
       <motion.div
         initial={{ scale: 0, opacity: 0 }}

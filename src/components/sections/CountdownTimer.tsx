@@ -120,48 +120,30 @@ export default function CountdownTimer() {
       }}
     >
       <div className="section-container" style={{ position: "relative", zIndex: 1 }}>
-        {/* Countdown Card Container */}
+        {/* Countdown Container (Clean without bulky outer card) */}
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           style={{
             maxWidth: 460,
             margin: "0 auto",
-            background: "#F8F6F2",
-            borderRadius: 24,
-            padding: "2.75rem 2rem 2.25rem",
-            boxShadow: "0 12px 36px rgba(0, 0, 0, 0.06)",
-            border: "1px solid rgba(0, 0, 0, 0.05)",
             position: "relative",
-            overflow: "hidden",
+            width: "100%",
           }}
         >
-          {/* Top-Right Soft Blush Accent Circle */}
-          <div
-            style={{
-              position: "absolute",
-              top: -20,
-              right: -20,
-              width: 130,
-              height: 130,
-              borderRadius: "50%",
-              background: "rgba(240, 222, 218, 0.55)",
-              pointerEvents: "none",
-            }}
-          />
-
           {/* Title */}
           <h2
             style={{
               fontFamily: "var(--font-cookie), 'Cookie', cursive, serif",
-              fontSize: "2.4rem",
+              fontSize: "clamp(2rem, 5.5vw, 2.8rem)",
               fontWeight: 400,
-              color: "#2D3748",
-              marginBottom: "2rem",
+              color: "#F5F0E6",
+              marginBottom: "clamp(1.2rem, 3.5vw, 1.8rem)",
               position: "relative",
               zIndex: 2,
+              lineHeight: 1.2,
             }}
           >
             {hasPassed ? "Hari Bahagia Telah Tiba" : title}
@@ -173,7 +155,7 @@ export default function CountdownTimer() {
               style={{
                 fontFamily: "var(--font-cookie), 'Cookie', cursive, serif",
                 fontSize: "1.8rem",
-                color: "#4A5D52",
+                color: "#C9A96E",
                 marginBottom: "2rem",
               }}
             >
@@ -184,9 +166,10 @@ export default function CountdownTimer() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
-                gap: "0.5rem",
+                gap: "clamp(6px, 1.8vw, 12px)",
                 alignItems: "center",
-                marginBottom: "2.5rem",
+                maxWidth: 400,
+                margin: "0 auto 2rem",
                 position: "relative",
                 zIndex: 2,
               }}
@@ -200,27 +183,37 @@ export default function CountdownTimer() {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: 0,
+                      padding: "clamp(0.65rem, 2vw, 1rem) clamp(0.2rem, 1vw, 0.5rem)",
+                      background: "rgba(12, 12, 12, 0.85)",
+                      borderRadius: 8,
+                      border: "1.5px solid #C9A96E",
+                      boxShadow: "0 4px 14px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(201, 169, 110, 0.08)",
                     }}
                   >
                     <span
                       style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
+                        fontFamily: "var(--font-cormorant), 'Cormorant Garamond', 'Playfair Display', serif",
+                        fontSize: "clamp(1.4rem, 4.4vw, 2.2rem)",
                         fontWeight: 600,
-                        color: "#1A202C",
-                        lineHeight: 1.1,
-                        marginBottom: "0.4rem",
+                        color: "#DFBA73",
+                        lineHeight: 1.05,
+                        marginBottom: "0.25rem",
                         fontVariantNumeric: "tabular-nums",
+                        textShadow: "0 2px 6px rgba(0, 0, 0, 0.4)",
                       }}
                     >
                       {String(val).padStart(2, "0")}
                     </span>
                     <span
                       style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: "0.75rem",
-                        fontWeight: 600,
-                        color: "#4A5568",
+                        fontFamily: "var(--font-cormorant), 'Cormorant Garamond', 'Playfair Display', serif",
+                        fontSize: "clamp(0.75rem, 2.2vw, 0.95rem)",
+                        fontWeight: 400,
+                        color: "#DFBA73",
+                        lineHeight: 1,
+                        textTransform: "capitalize",
                       }}
                     >
                       {unit.label}
@@ -241,26 +234,26 @@ export default function CountdownTimer() {
               style={{
                 display: "inline-block",
                 padding: "0.85rem 2.4rem",
-                background: "#4A5D52",
-                color: "#FFFFFF",
+                background: "linear-gradient(135deg, #C9A96E 0%, #A6874E 100%)",
+                color: "#161616",
                 borderRadius: 50,
                 fontFamily: "'Montserrat', sans-serif",
                 fontSize: "0.85rem",
-                fontWeight: 600,
-                letterSpacing: "0.02em",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
                 textDecoration: "none",
-                boxShadow: "0 4px 14px rgba(74, 93, 82, 0.35)",
-                transition: "transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease",
+                boxShadow: "0 4px 18px rgba(201, 169, 110, 0.35)",
+                transition: "transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.background = "#3F5147";
+                (e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.1)";
                 (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
-                (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 18px rgba(74, 93, 82, 0.45)";
+                (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 22px rgba(201, 169, 110, 0.5)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.background = "#4A5D52";
+                (e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1)";
                 (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
-                (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 14px rgba(74, 93, 82, 0.35)";
+                (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 18px rgba(201, 169, 110, 0.35)";
               }}
             >
               Simpan Tanggal

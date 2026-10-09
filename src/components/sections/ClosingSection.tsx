@@ -1,9 +1,46 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { weddingData } from "@/lib/wedding-data";
 
 export default function ClosingSection() {
+  const [couple, setCouple] = useState({
+    groom: weddingData.groom.name,
+    bride: weddingData.bride.name,
+    displayDate: weddingData.akad.displayDate,
+    closingPhoto: "/dita.jpeg",
+    quoteText: weddingData.closingQuote.text,
+    quoteSource: weddingData.closingQuote.source,
+  });
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success && d.data?.settings) {
+          const s = d.data.settings;
+          let groom = s.groom_name;
+          let bride = s.bride_name;
+          if ((!groom || !bride) && s.cover_couple_name) {
+            const parts = s.cover_couple_name.split(/&|dan|\+/i).map((p: string) => p.trim());
+            if (parts.length >= 2) {
+              groom = groom || parts[0];
+              bride = bride || parts[1];
+            }
+          }
+          setCouple({
+            groom: groom || weddingData.groom.name,
+            bride: bride || weddingData.bride.name,
+            displayDate: s.akad_display_date || s.cover_date_text || weddingData.akad.displayDate,
+            closingPhoto: s.closing_photo_url || "/dita.jpeg",
+            quoteText: s.closing_quote_text || weddingData.closingQuote.text,
+            quoteSource: s.closing_quote_source || weddingData.closingQuote.source,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
   return (
     <section
       id="penutup"
@@ -30,52 +67,55 @@ export default function ClosingSection() {
           }}
         />
 
-        {/* Closing Quran Quote Card Wrapper with Extra Large Transparent Floral Accent Above Card */}
-        <div style={{ position: "relative", maxWidth: 640, margin: "0 auto 3.5rem" }}>
-          {/* Top Left Floral Element (Extra Large Pure Transparent PNG Outside Above Card) */}
+        {/* Closing Quran Quote Card Wrapper */}
+        <div style={{ position: "relative", maxWidth: 640, margin: "0 auto 3rem", width: "100%" }}>
+          {/* Top Left Bordercard Element (Outside Above Card Corner) */}
           <div
             className="pointer-events-none select-none"
             style={{
               position: "absolute",
-              top: "-95px",
-              left: "-45px",
-              width: "clamp(260px, 52vw, 420px)",
-              height: "clamp(260px, 52vw, 420px)",
+              top: "clamp(-35px, -5vw, -20px)",
+              left: "clamp(-15px, -2vw, 0px)",
+              width: "clamp(90px, 20vw, 190px)",
+              height: "clamp(90px, 20vw, 190px)",
               zIndex: 3,
+              filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.5))",
             }}
           >
             <img
-              src="/elemen_pojok_kiri.png"
-              alt="Elemen Pojok Atas Kiri"
+              src="/uploads/bordercard.png"
+              alt="Bordercard Pojok Kiri"
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "contain",
-                objectPosition: "bottom left",
+                display: "block",
               }}
             />
           </div>
 
-          {/* Top Right Floral Element (Extra Large Pure Transparent PNG Outside Above Card) */}
+          {/* Top Right Bordercard Element (Outside Above Card Corner) */}
           <div
             className="pointer-events-none select-none"
             style={{
               position: "absolute",
-              top: "-95px",
-              right: "-45px",
-              width: "clamp(260px, 52vw, 420px)",
-              height: "clamp(260px, 52vw, 420px)",
+              top: "clamp(-35px, -5vw, -20px)",
+              right: "clamp(-15px, -2vw, 0px)",
+              width: "clamp(90px, 20vw, 190px)",
+              height: "clamp(90px, 20vw, 190px)",
               zIndex: 3,
+              filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.5))",
+              transform: "scaleX(-1)",
             }}
           >
             <img
-              src="/elemen_pojok_kanan.png"
-              alt="Elemen Pojok Atas Kanan"
+              src="/uploads/bordercard.png"
+              alt="Bordercard Pojok Kanan"
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "contain",
-                objectPosition: "bottom right",
+                display: "block",
               }}
             />
           </div>
@@ -90,21 +130,23 @@ export default function ClosingSection() {
             style={{
               position: "relative",
               zIndex: 2,
-              padding: "2.75rem 2rem 2.5rem",
-              background: "#F8F6F2",
+              padding: "clamp(1.5rem, 4vw, 2.75rem) clamp(1rem, 3vw, 2rem) clamp(1.4rem, 3.5vw, 2.5rem)",
+              background: "rgba(22, 22, 22, 0.78)",
               backdropFilter: "blur(12px)",
               borderRadius: 24,
-              border: "1px solid rgba(201,169,110,0.3)",
-              boxShadow: "0 12px 36px rgba(0,0,0,0.05)",
+              border: "1px solid rgba(201, 169, 110, 0.35)",
+              boxShadow: "0 12px 36px rgba(0, 0, 0, 0.45)",
             }}
           >
             <div
               style={{
+                position: "relative",
+                zIndex: 2,
                 fontFamily: "'Playfair Display', serif",
-                fontSize: "3.5rem",
-                color: "rgba(201,169,110,0.3)",
+                fontSize: "clamp(2.5rem, 6vw, 3.5rem)",
+                color: "rgba(201, 169, 110, 0.4)",
                 lineHeight: 0.8,
-                marginBottom: "0.5rem",
+                marginBottom: "0.4rem",
               }}
             >
               &ldquo;
@@ -112,19 +154,21 @@ export default function ClosingSection() {
 
             <p
               style={{
-                color: "#333330",
+                position: "relative",
+                zIndex: 2,
+                color: "#F5F0E6",
                 fontStyle: "italic",
-                lineHeight: 1.85,
-                marginBottom: "1.25rem",
+                lineHeight: 1.8,
+                marginBottom: "1rem",
                 fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(1rem, 2.5vw, 1.15rem)",
+                fontSize: "clamp(0.88rem, 2.2vw, 1.15rem)",
               }}
             >
-              {weddingData.closingQuote.text}
+              {couple.quoteText}
             </p>
 
-            <p className="label-caps" style={{ color: "#C9A96E" }}>
-              {weddingData.closingQuote.source}
+            <p className="label-caps" style={{ position: "relative", zIndex: 2, color: "#C9A96E", fontSize: "clamp(0.68rem, 1.8vw, 0.75rem)" }}>
+              {couple.quoteSource}
             </p>
           </motion.div>
         </div>
@@ -139,7 +183,7 @@ export default function ClosingSection() {
         >
           <p
             className="label-caps"
-            style={{ color: "#718096", marginBottom: "0.75rem", letterSpacing: "0.15em" }}
+            style={{ color: "#C9A96E", marginBottom: "0.75rem", letterSpacing: "0.15em" }}
           >
             Dengan segenap cinta,
           </p>
@@ -158,8 +202,9 @@ export default function ClosingSection() {
               fontFamily: "'Cookie', cursive, serif",
               fontSize: "clamp(2.4rem, 6vw, 3.4rem)",
               fontWeight: 400,
-              color: "#2D3748",
+              color: "#F5F0E6",
               marginBottom: "1.25rem",
+              textShadow: "0 2px 8px rgba(0,0,0,0.5)",
             }}
           >
             Terima Kasih
@@ -169,7 +214,7 @@ export default function ClosingSection() {
             style={{
               fontFamily: "'Montserrat', sans-serif",
               fontSize: "0.95rem",
-              color: "#4A5568",
+              color: "#D1CCC2",
               lineHeight: 1.75,
               maxWidth: 480,
               margin: "0 auto 2rem",
@@ -184,18 +229,19 @@ export default function ClosingSection() {
               fontFamily: "'Cookie', cursive, serif",
               fontSize: "clamp(2.2rem, 5vw, 3rem)",
               fontWeight: 400,
-              color: "#2D3748",
+              color: "#F5F0E6",
+              textShadow: "0 2px 8px rgba(0,0,0,0.5)",
             }}
           >
-            {weddingData.groom.name}{" "}
+            {couple.groom}{" "}
             <span style={{ color: "#C9A96E", fontWeight: 400 }}>&amp;</span>{" "}
-            {weddingData.bride.name}
+            {couple.bride}
           </p>
         </motion.div>
 
         {/* Arched Photo Card with Symmetrical Left & Right Bunga1 Floral Accents */}
-        <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto 3.5rem" }}>
-          <div style={{ position: "relative", width: "clamp(280px, 85vw, 360px)" }}>
+        <div style={{ display: "flex", justifyContent: "center", width: "100%", margin: "0 auto 3rem" }}>
+          <div style={{ position: "relative", width: "clamp(240px, 78vw, 340px)" }}>
             {/* Arched Photo Frame */}
             <motion.div
               initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -204,19 +250,19 @@ export default function ClosingSection() {
               transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
               style={{
                 width: "100%",
-                height: "clamp(380px, 105vw, 470px)",
+                height: "clamp(320px, 95vw, 440px)",
                 borderRadius: "200px 200px 24px 24px",
                 overflow: "hidden",
-                border: "5px solid #FAF8F5",
+                border: "4px solid rgba(201, 169, 110, 0.4)",
                 boxShadow:
-                  "0 20px 50px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06)",
+                  "0 20px 50px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.3)",
                 position: "relative",
                 zIndex: 1,
               }}
             >
               <img
-                src="/dita.jpeg"
-                alt={`Foto ${weddingData.groom.name} & ${weddingData.bride.name}`}
+                src={couple.closingPhoto}
+                alt={`Foto ${couple.groom} & ${couple.bride}`}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -226,62 +272,129 @@ export default function ClosingSection() {
               />
             </motion.div>
 
-            {/* Left Floral Accent (bunga1_trans.png - Shifted Slightly Further Right) */}
-            <motion.div
-              initial={{ opacity: 0, x: -30, scale: 0.9 }}
-              whileInView={{ opacity: 1, x: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            {/* Wayang Frame Ornament (Centered at Bottom of Photo Frame) */}
+            <div
               className="pointer-events-none select-none"
               style={{
                 position: "absolute",
-                bottom: "-70px",
-                left: "clamp(-110px, -18vw, -45px)",
-                width: "clamp(240px, 48vw, 360px)",
-                height: "clamp(240px, 48vw, 360px)",
+                bottom: "-28px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "clamp(280px, 95vw, 440px)",
+                maxWidth: "100vw",
                 zIndex: 2,
               }}
             >
-              <img
-                src="/bunga1_trans.png"
-                alt="Elemen Bunga1 Kiri"
+              <motion.div
+                initial={{ opacity: 0, y: 25, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
                 style={{
+                  position: "relative",
                   width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                  objectPosition: "left bottom",
+                  aspectRatio: "928 / 581",
+                  filter:
+                    "drop-shadow(0 6px 16px rgba(0, 0, 0, 0.12)) drop-shadow(0 2px 6px rgba(201, 169, 110, 0.3))",
                 }}
-              />
-            </motion.div>
+              >
+                {/* 1. Kipas Kiri (Left Gunungan & Wing) - Buka Tutup Animation */}
+                <motion.div
+                  animate={{
+                    rotate: [0, 3.2, 0, -2.2, 0],
+                    y: [0, -1.5, 0, 0.8, 0],
+                  }}
+                  transition={{
+                    duration: 7,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    transformOrigin: "36% 88%",
+                    zIndex: 1,
+                  }}
+                >
+                  <img
+                    src="/wayang_kipas_left.png"
+                    alt="Wayang Kipas Kiri"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
+                </motion.div>
 
-            {/* Right Floral Accent (bunga1_trans.png - Shifted Slightly Further Right) */}
-            <motion.div
-              initial={{ opacity: 0, x: 30, scale: 0.9 }}
-              whileInView={{ opacity: 1, x: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-              className="pointer-events-none select-none"
-              style={{
-                position: "absolute",
-                bottom: "-70px",
-                right: "clamp(-170px, -32vw, -100px)",
-                width: "clamp(240px, 48vw, 360px)",
-                height: "clamp(240px, 48vw, 360px)",
-                zIndex: 2,
-              }}
-            >
-              <img
-                src="/bunga1_trans.png"
-                alt="Elemen Bunga1 Kanan"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                  objectPosition: "right bottom",
-                  transform: "scaleX(-1)",
-                }}
-              />
-            </motion.div>
+                {/* 2. Kipas Kanan (Right Gunungan & Wing) - Symmetrical Buka Tutup Animation */}
+                <motion.div
+                  animate={{
+                    rotate: [0, -3.2, 0, 2.2, 0],
+                    y: [0, -1.5, 0, 0.8, 0],
+                  }}
+                  transition={{
+                    duration: 7,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    transformOrigin: "64% 88%",
+                    zIndex: 1,
+                  }}
+                >
+                  <img
+                    src="/wayang_kipas_right.png"
+                    alt="Wayang Kipas Kanan"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
+                </motion.div>
+
+                {/* 3. Base Ornament (Center Lotus & Pedestal) in Front */}
+                <motion.div
+                  animate={{
+                    scale: [1, 1.015, 1, 1.01, 1],
+                    y: [0, -1, 0, -0.5, 0],
+                  }}
+                  transition={{
+                    duration: 7,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    transformOrigin: "50% 90%",
+                    zIndex: 2,
+                  }}
+                >
+                  <img
+                    src="/wayang_base.png"
+                    alt="Wayang Base Ornament"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
+                </motion.div>
+              </motion.div>
+            </div>
           </div>
         </div>
 
@@ -298,12 +411,12 @@ export default function ClosingSection() {
         <p
           style={{
             fontFamily: "'Montserrat', sans-serif",
-            color: "#888880",
-            fontSize: "0.9rem",
+            color: "#D1CCC2",
+            fontSize: "0.95rem",
             fontWeight: 500,
           }}
         >
-          {weddingData.akad.displayDate}
+          {couple.displayDate}
         </p>
 
         {/* Footer Credit */}
@@ -316,7 +429,7 @@ export default function ClosingSection() {
             marginTop: "3.5rem",
             fontFamily: "'Montserrat', sans-serif",
             fontSize: "0.8rem",
-            color: "#718096",
+            color: "#A0A09B",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -339,7 +452,7 @@ export default function ClosingSection() {
               transition: "color 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.color = "#4A5D52";
+              (e.currentTarget as HTMLAnchorElement).style.color = "#E2D1A6";
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLAnchorElement).style.color = "#C9A96E";

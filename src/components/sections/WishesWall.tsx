@@ -58,11 +58,11 @@ function WishCard({ wish, index }: { wish: WishItem; index: number }) {
       transition={{ duration: 0.5, delay: index * 0.05 }}
       style={{
         padding: "1.5rem",
-        background: "rgba(252,251,247,0.85)",
-        backdropFilter: "blur(8px)",
+        background: "rgba(22, 22, 22, 0.78)",
+        backdropFilter: "blur(12px)",
         borderRadius: 18,
-        border: "1px solid rgba(0, 0, 0, 0.05)",
-        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.04)",
+        border: "1px solid rgba(201, 169, 110, 0.35)",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.45)",
         breakInside: "avoid",
         marginBottom: "1rem",
       }}
@@ -71,7 +71,7 @@ function WishCard({ wish, index }: { wish: WishItem; index: number }) {
         style={{
           fontFamily: "'Playfair Display', serif",
           fontSize: "2.5rem",
-          color: "rgba(201,169,110,0.3)",
+          color: "rgba(201, 169, 110, 0.4)",
           lineHeight: 1,
           marginBottom: "-0.4rem",
           marginLeft: "-0.25rem",
@@ -84,7 +84,7 @@ function WishCard({ wish, index }: { wish: WishItem; index: number }) {
         style={{
           fontFamily: "'Inter', sans-serif",
           fontSize: "0.9rem",
-          color: "#4A5568",
+          color: "#EAE6DF",
           lineHeight: 1.65,
           marginBottom: "1rem",
         }}
@@ -104,7 +104,7 @@ function WishCard({ wish, index }: { wish: WishItem; index: number }) {
             fontFamily: "'Playfair Display', serif",
             fontSize: "0.95rem",
             fontWeight: 600,
-            color: "#2D3748",
+            color: "#F5F0E6",
           }}
         >
           {wish.name}
@@ -113,7 +113,7 @@ function WishCard({ wish, index }: { wish: WishItem; index: number }) {
           style={{
             fontFamily: "'Inter', sans-serif",
             fontSize: "0.65rem",
-            color: "#A0AEC0",
+            color: "#C9A96E",
           }}
         >
           {formattedDate}
@@ -212,11 +212,11 @@ export default function WishesWall() {
     width: "100%",
     background: "transparent",
     border: "none",
-    borderBottom: "1.5px solid #718096",
+    borderBottom: "1.5px solid rgba(201, 169, 110, 0.4)",
     padding: "0.6rem 0",
     fontFamily: "'Inter', sans-serif",
     fontSize: "0.95rem",
-    color: "#2D3748",
+    color: "#F5F0E6",
     outline: "none",
     borderRadius: 0,
   };
@@ -244,10 +244,11 @@ export default function WishesWall() {
           <h2
             style={{
               fontFamily: "'Cookie', cursive, serif",
-              fontSize: "clamp(2.4rem, 6vw, 3.4rem)",
+              fontSize: "clamp(2rem, 5.5vw, 3rem)",
               fontWeight: 400,
-              color: "#2D3748",
-              marginBottom: "0.75rem",
+              color: "#F5F0E6",
+              marginBottom: "0.5rem",
+              lineHeight: 1.2,
             }}
           >
             Kirim Ucapan &amp; Doa
@@ -255,8 +256,8 @@ export default function WishesWall() {
           <p
             style={{
               fontFamily: "'Montserrat', sans-serif",
-              fontSize: "0.95rem",
-              color: "#4A5568",
+              fontSize: "clamp(0.82rem, 2vw, 0.95rem)",
+              color: "#D1CCC2",
               lineHeight: 1.6,
             }}
           >
@@ -272,16 +273,18 @@ export default function WishesWall() {
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
           style={{
             maxWidth: 460,
-            margin: "0 auto 3.5rem",
-            background: "#F8F6F2",
+            margin: "0 auto 3rem",
+            background: "rgba(22, 22, 22, 0.78)",
+            backdropFilter: "blur(12px)",
             borderRadius: 24,
-            padding: "2.75rem 2rem 2.25rem",
-            boxShadow: "0 12px 36px rgba(0, 0, 0, 0.06)",
-            border: "1px solid rgba(0, 0, 0, 0.05)",
+            padding: "clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 3vw, 2rem) clamp(1.4rem, 3.5vw, 2.25rem)",
+            boxShadow: "0 12px 36px rgba(0, 0, 0, 0.45)",
+            border: "1px solid rgba(201, 169, 110, 0.35)",
             textAlign: "left",
+            width: "100%",
           }}
         >
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "clamp(1.2rem, 3vw, 1.75rem)" }}>
             {/* Field 1: Nama Lengkap */}
             <div>
               <label
@@ -292,7 +295,7 @@ export default function WishesWall() {
                   fontWeight: 600,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#4A5568",
+                  color: "#C9A96E",
                   marginBottom: "0.5rem",
                 }}
               >
@@ -318,7 +321,7 @@ export default function WishesWall() {
                   fontWeight: 600,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#4A5568",
+                  color: "#C9A96E",
                   marginBottom: "0.5rem",
                 }}
               >
@@ -330,12 +333,12 @@ export default function WishesWall() {
                 style={{
                   ...inputStyle,
                   cursor: "pointer",
-                  color: "#2D3748",
+                  color: "#F5F0E6",
                 }}
               >
-                <option value="Hadir">Hadir</option>
-                <option value="Ragu-ragu">Ragu-ragu</option>
-                <option value="Maaf Tidak Bisa Hadir">Maaf Tidak Bisa Hadir</option>
+                <option value="Hadir" style={{ background: "#1E1E1E", color: "#F5F0E6" }}>Hadir</option>
+                <option value="Ragu-ragu" style={{ background: "#1E1E1E", color: "#F5F0E6" }}>Ragu-ragu</option>
+                <option value="Maaf Tidak Bisa Hadir" style={{ background: "#1E1E1E", color: "#F5F0E6" }}>Maaf Tidak Bisa Hadir</option>
               </select>
             </div>
 
@@ -349,7 +352,7 @@ export default function WishesWall() {
                   fontWeight: 600,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#4A5568",
+                  color: "#C9A96E",
                   marginBottom: "0.5rem",
                 }}
               >
@@ -379,13 +382,13 @@ export default function WishesWall() {
                     exit={{ opacity: 0 }}
                     style={{
                       padding: "0.75rem 1.5rem",
-                      background: "rgba(74, 93, 82, 0.1)",
+                      background: "rgba(201, 169, 110, 0.15)",
                       borderRadius: 50,
-                      border: "1px solid rgba(74, 93, 82, 0.3)",
+                      border: "1px solid rgba(201, 169, 110, 0.4)",
                       display: "inline-block",
                     }}
                   >
-                    <p style={{ color: "#4A5D52", fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 600 }}>
+                    <p style={{ color: "#F5F0E6", fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 600 }}>
                       ✨ Terima kasih atas doa &amp; ucapannya!
                     </p>
                   </motion.div>
@@ -398,31 +401,30 @@ export default function WishesWall() {
                     style={{
                       display: "inline-block",
                       padding: "0.85rem 2.5rem",
-                      background: "#4A5D52",
-                      color: "#FFFFFF",
+                      background: "linear-gradient(135deg, #C9A96E 0%, #A6874E 100%)",
+                      color: "#161616",
                       borderRadius: 50,
                       fontFamily: "'Inter', sans-serif",
                       fontSize: "0.85rem",
-                      fontWeight: 600,
-                      letterSpacing: "0.04em",
+                      fontWeight: 700,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
                       border: "none",
-                      boxShadow: "0 4px 14px rgba(74, 93, 82, 0.35)",
+                      boxShadow: "0 6px 18px rgba(201, 169, 110, 0.25)",
                       cursor: isSubmitting ? "not-allowed" : "pointer",
                       opacity: isSubmitting ? 0.7 : 1,
-                      transition: "transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease",
+                      transition: "transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease",
                     }}
                     onMouseEnter={(e) => {
                       if (!isSubmitting) {
-                        (e.currentTarget as HTMLButtonElement).style.background = "#3F5147";
                         (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 6px 18px rgba(74, 93, 82, 0.45)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(201, 169, 110, 0.4)";
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isSubmitting) {
-                        (e.currentTarget as HTMLButtonElement).style.background = "#4A5D52";
                         (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 14px rgba(74, 93, 82, 0.35)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 6px 18px rgba(201, 169, 110, 0.25)";
                       }
                     }}
                   >

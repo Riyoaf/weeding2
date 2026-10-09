@@ -86,7 +86,6 @@ export default function FloralAccent({
           opacity,
           zIndex: 1,
           pointerEvents: "none",
-          mixBlendMode: "multiply",
           ...style,
         }}
       >

@@ -13,6 +13,8 @@ export default function AdminCoverPage() {
     cover_photo_url: "/dita 2.jpeg",
     cover_badge_text: "Pernikahan dari",
     cover_couple_name: "",
+    groom_name: "",
+    bride_name: "",
     cover_date_text: "",
     cover_bg_url: "/cover-bg.jpg",
   });
@@ -26,10 +28,23 @@ export default function AdminCoverPage() {
         if (data.success && data.data?.settings) {
           const s = data.data.settings;
           setSettingsFull(s);
+
+          let groom = s.groom_name;
+          let bride = s.bride_name;
+          if ((!groom || !bride) && s.cover_couple_name) {
+            const parts = s.cover_couple_name.split(/&|dan|\+/i).map((p: string) => p.trim());
+            if (parts.length >= 2) {
+              groom = groom || parts[0];
+              bride = bride || parts[1];
+            }
+          }
+
           setForm({
             cover_photo_url: s.cover_photo_url || "/dita 2.jpeg",
             cover_badge_text: s.cover_badge_text || "Pernikahan dari",
-            cover_couple_name: s.cover_couple_name || (s.groom_name && s.bride_name ? `${s.groom_name} & ${s.bride_name}` : "Afif & Dita"),
+            cover_couple_name: s.cover_couple_name || (groom && bride ? `${groom} & ${bride}` : "Afif & Dita"),
+            groom_name: groom || "Afif",
+            bride_name: bride || "Dita",
             cover_date_text: s.cover_date_text || (s.akad_display_day && s.akad_display_date ? `${s.akad_display_day}, ${s.akad_display_date}` : "Sabtu, 12 September 2026"),
             cover_bg_url: s.cover_bg_url || "/cover-bg.jpg",
           });
@@ -37,6 +52,23 @@ export default function AdminCoverPage() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  const handleCoverCoupleNameChange = (val: string) => {
+    const parts = val.split(/&|dan|\+/i).map((p: string) => p.trim());
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      setForm((prev) => ({
+        ...prev,
+        cover_couple_name: val,
+        groom_name: parts[0],
+        bride_name: parts[1],
+      }));
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        cover_couple_name: val,
+      }));
+    }
+  };
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -83,6 +115,8 @@ export default function AdminCoverPage() {
         cover_photo_url: form.cover_photo_url,
         cover_badge_text: form.cover_badge_text,
         cover_couple_name: form.cover_couple_name,
+        groom_name: form.groom_name,
+        bride_name: form.bride_name,
         cover_date_text: form.cover_date_text,
         cover_bg_url: form.cover_bg_url,
       };
@@ -95,7 +129,7 @@ export default function AdminCoverPage() {
 
       const data = await res.json();
       if (data.success) {
-        setMessage({ type: "success", text: "Pengaturan Cover Undangan Berhasil Disimpan!" });
+        setMessage({ type: "success", text: "Pengaturan Cover & Nama Halaman Utama Berhasil Disimpan!" });
       } else {
         setMessage({ type: "error", text: data.message || "Gagal menyimpan perubahan." });
       }
@@ -236,13 +270,84 @@ export default function AdminCoverPage() {
                 <input
                   type="text"
                   value={form.cover_couple_name}
-                  onChange={(e) => setForm({ ...form, cover_couple_name: e.target.value })}
+                  onChange={(e) => handleCoverCoupleNameChange(e.target.value)}
                   style={inputStyle}
-                  placeholder="Afif & Dita"
+                  placeholder="Sherly & Dimas"
                 />
                 <span style={{ fontSize: "0.72rem", color: "#9CA3AF", marginTop: "0.25rem", display: "block" }}>
-                  Tampil dengan font latin artistik &apos;Cookie&apos; di kartu cover.
+                  Tampil pada layar pembuka (Cover). Mengetik &quot;NamaPria &amp; NamaWanita&quot; otomatis mengisi nama di bawah.
                 </span>
+              </div>
+
+              {/* SINKRONISASI NAMA HALAMAN PALING ATAS (HERO SECTION) */}
+              <div
+                style={{
+                  background: "#F9FAFB",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 10,
+                  padding: "1rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.85rem",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: "0.85rem", fontWeight: 700, color: "#111827" }}>
+                      Nama di Halaman Paling Atas (Hero Section)
+                    </h3>
+                    <p style={{ margin: "0.15rem 0 0", fontSize: "0.72rem", color: "#6B7280" }}>
+                      Nama yang tampil besar saat cover dibuka (&quot;The Wedding of ... &amp; ...&quot;).
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+                  <div>
+                    <label style={{ ...labelStyle, fontSize: "0.75rem" }}>Nama Pengantin Pria (Atas)</label>
+                    <input
+                      type="text"
+                      value={form.groom_name}
+                      onChange={(e) => setForm({ ...form, groom_name: e.target.value })}
+                      style={{ ...inputStyle, background: "#FFFFFF" }}
+                      placeholder="Dimas"
+                    />
+                  </div>
+                  <div>
+                    <label style={{ ...labelStyle, fontSize: "0.75rem" }}>Nama Pengantin Wanita (Bawah)</label>
+                    <input
+                      type="text"
+                      value={form.bride_name}
+                      onChange={(e) => setForm({ ...form, bride_name: e.target.value })}
+                      style={{ ...inputStyle, background: "#FFFFFF" }}
+                      placeholder="Sherly"
+                    />
+                  </div>
+                </div>
+
+                {/* Mini Preview Box */}
+                <div
+                  style={{
+                    background: "#FFFFFF",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: 8,
+                    padding: "0.75rem",
+                    textAlign: "center",
+                  }}
+                >
+                  <p style={{ margin: "0 0 0.25rem", fontSize: "0.62rem", color: "#C9A96E", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                    THE WEDDING OF
+                  </p>
+                  <p style={{ margin: 0, fontSize: "1.35rem", fontFamily: "var(--font-cookie), 'Cookie', cursive", color: "#1F2937", lineHeight: 1.2 }}>
+                    {form.groom_name || "Pria"}
+                  </p>
+                  <p style={{ margin: 0, fontSize: "1rem", fontFamily: "var(--font-cookie), 'Cookie', cursive", color: "#C9A96E", lineHeight: 1.1 }}>
+                    &amp;
+                  </p>
+                  <p style={{ margin: 0, fontSize: "1.35rem", fontFamily: "var(--font-cookie), 'Cookie', cursive", color: "#1F2937", lineHeight: 1.2 }}>
+                    {form.bride_name || "Wanita"}
+                  </p>
+                </div>
               </div>
 
               <div>
@@ -354,8 +459,8 @@ export default function AdminCoverPage() {
               border: "1px solid #E5E7EB",
             }}
           >
-            {/* Blur filter pseudo-overlay */}
-            <div style={{ position: "absolute", inset: 0, backdropFilter: "blur(2px)", background: "rgba(255,255,255,0.4)" }} />
+            {/* Dark transparent overlay so background pattern/texture is visible */}
+            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.40) 0%, rgba(0, 0, 0, 0.65) 65%, rgba(0, 0, 0, 0.85) 100%)" }} />
 
             {/* Glass Card */}
             <div
@@ -365,11 +470,11 @@ export default function AdminCoverPage() {
                 width: "100%",
                 maxWidth: 280,
                 padding: "1.75rem 1.25rem",
-                background: "rgba(255, 255, 255, 0.65)",
+                background: "rgba(18, 18, 18, 0.72)",
                 backdropFilter: "blur(16px)",
                 borderRadius: 20,
-                border: "1px solid rgba(255, 255, 255, 0.8)",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                border: "1px solid rgba(212, 175, 55, 0.35)",
+                boxShadow: "0 16px 36px rgba(0,0,0,0.5), 0 0 20px rgba(212, 175, 55, 0.1)",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
@@ -384,53 +489,72 @@ export default function AdminCoverPage() {
                   fontWeight: 600,
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  color: "#555550",
+                  color: "#E8D5A3",
                   margin: "0 0 1rem",
                 }}
               >
                 {form.cover_badge_text || "Pernikahan dari"}
               </p>
 
-              {/* Photo & rounded frame */}
+              {/* Photo Avatar with Wayang Frame Cradle */}
               <div
                 style={{
                   position: "relative",
-                  width: 130,
+                  width: 155,
                   height: 130,
-                  marginBottom: "1rem",
+                  marginBottom: "0.75rem",
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "flex-start",
                 }}
               >
-                <img
-                  src={form.cover_photo_url || "/dita 2.jpeg"}
-                  alt="Cover Photo"
+                {/* Profile Photo - Lowered slightly */}
+                <div
                   style={{
-                    position: "absolute",
-                    top: "45%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "74%",
-                    height: "74%",
+                    position: "relative",
+                    width: 96,
+                    height: 96,
                     borderRadius: "50%",
-                    objectFit: "cover",
-                    objectPosition: "center 10%",
+                    marginTop: 10,
+                    padding: 2.5,
+                    background:
+                      "linear-gradient(135deg, #E8D5A3 0%, #C9A96E 50%, #B8934A 100%)",
+                    boxShadow: "0 0 0 1.5px rgba(18, 18, 18, 0.9), 0 6px 16px rgba(0, 0, 0, 0.6)",
                     zIndex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
                   }}
-                />
+                >
+                  <img
+                    src={form.cover_photo_url || "/dita 2.jpeg"}
+                    alt="Cover Photo"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      objectPosition: "center 15%",
+                    }}
+                  />
+                </div>
+
+                {/* Wayang Frame Ornament */}
                 <img
-                  src="/rounded.png"
-                  alt="Frame"
+                  src="/wayang_frame.png"
+                  alt="Ornamen Wayang"
                   style={{
                     position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    mixBlendMode: "multiply",
-                    pointerEvents: "none",
+                    bottom: -2,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: 132,
+                    height: "auto",
                     zIndex: 2,
+                    pointerEvents: "none",
+                    filter: "drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7))",
                   }}
                 />
               </div>
@@ -439,9 +563,10 @@ export default function AdminCoverPage() {
               <h2
                 style={{
                   fontFamily: "var(--font-cookie), 'Cookie', cursive, serif",
-                  fontSize: "2rem",
+                  fontSize: "2.1rem",
                   fontWeight: 400,
-                  color: "#1a1a18",
+                  color: "#E5C06E",
+                  textShadow: "0 2px 10px rgba(229, 192, 110, 0.35)",
                   lineHeight: 1.1,
                   margin: "0 0 0.5rem",
                 }}
@@ -454,7 +579,7 @@ export default function AdminCoverPage() {
                 style={{
                   fontFamily: "'Montserrat', sans-serif",
                   fontSize: "0.75rem",
-                  color: "#555550",
+                  color: "rgba(255, 255, 255, 0.8)",
                   fontWeight: 500,
                   margin: "0 0 1.25rem",
                 }}
@@ -466,19 +591,32 @@ export default function AdminCoverPage() {
               <div
                 style={{
                   padding: "0.5rem 1.25rem",
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(0,0,0,0.08)",
+                  background: "linear-gradient(135deg, #D4AF37 0%, #B8934A 100%)",
+                  border: "1px solid rgba(255, 235, 170, 0.5)",
                   borderRadius: 9999,
                   fontSize: "0.75rem",
                   fontWeight: 600,
-                  color: "#333330",
+                  color: "#1c180e",
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "0.35rem",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+                  gap: "0.4rem",
+                  boxShadow: "0 4px 14px rgba(0,0,0,0.3)",
                 }}
               >
-                Buka Undangan &rarr;
+                Buka Undangan
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
               </div>
             </div>
           </div>

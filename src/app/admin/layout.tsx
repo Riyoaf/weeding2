@@ -75,7 +75,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    label: "Musik & Quote",
+    label: "Musik, Quote & Penutup",
     path: "/admin/pengaturan",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -91,8 +91,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const isLoginPage = pathname === "/admin/login";
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (isLoginPage) {
@@ -146,31 +151,91 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#F8F9FA",
-        color: "#111827",
-        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-        display: "flex",
-      }}
-    >
-      {/* LEFT SIDEBAR (CATMIN Clean Minimalist Style) */}
-      <aside
-        style={{
-          width: 240,
-          background: "#FFFFFF",
-          borderRight: "1px solid #E5E7EB",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          zIndex: 50,
-          flexShrink: 0,
-        }}
-      >
+    <div className="admin-layout-root">
+      <style>{`
+        .admin-layout-root {
+          height: 100vh;
+          max-height: 100vh;
+          width: 100%;
+          overflow: hidden;
+          display: flex;
+          background: #F8F9FA;
+          color: #111827;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          position: relative;
+        }
+        .admin-sidebar {
+          width: 240px;
+          height: 100vh;
+          max-height: 100vh;
+          flex-shrink: 0;
+          background: #FFFFFF;
+          border-right: 1px solid #E5E7EB;
+          display: flex;
+          flex-direction: column;
+          justifyContent: space-between;
+          overflow-y: auto;
+          overflow-x: hidden;
+          z-index: 50;
+          transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .admin-main-wrap {
+          flex: 1;
+          height: 100vh;
+          max-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+          overflow: hidden;
+          position: relative;
+        }
+        .admin-main-content {
+          flex: 1;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding: 1.75rem;
+          -webkit-overflow-scrolling: touch;
+        }
+        .admin-mobile-toggle {
+          display: none !important;
+        }
+        @media (max-width: 768px) {
+          .admin-mobile-toggle {
+            display: inline-flex !important;
+          }
+          .admin-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            transform: translateX(-100%);
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.3);
+          }
+          .admin-sidebar.mobile-open {
+            transform: translateX(0);
+          }
+          .admin-main-content {
+            padding: 1rem;
+          }
+        }
+      `}</style>
+
+      {/* Backdrop for mobile drawer */}
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0, 0, 0, 0.45)",
+            zIndex: 45,
+            backdropFilter: "blur(2px)",
+          }}
+        />
+      )}
+
+      {/* LEFT SIDEBAR (Fixed Position & Isolated Scrolling) */}
+      <aside className={`admin-sidebar ${mobileOpen ? "mobile-open" : ""}`}>
         <div>
           {/* Logo Header matching CATMIN */}
           <div
@@ -178,35 +243,56 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               padding: "1.1rem 1.25rem",
               display: "flex",
               alignItems: "center",
-              gap: "0.75rem",
+              justifyContent: "space-between",
               borderBottom: "1px solid #F3F4F6",
             }}
           >
-            <div
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: "#111827",
+                  color: "#FFFFFF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+              </div>
+              <div>
+                <h1 style={{ fontSize: "0.95rem", fontWeight: 700, margin: 0, lineHeight: 1.2, color: "#111827", letterSpacing: "-0.01em" }}>
+                  CATMIN
+                </h1>
+                <p style={{ fontSize: "0.7rem", color: "#9CA3AF", margin: 0 }}>Wedding Admin</p>
+              </div>
+            </div>
+
+            {/* Mobile Close Button */}
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="admin-mobile-toggle"
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                background: "#111827",
-                color: "#FFFFFF",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                background: "transparent",
+                border: "none",
+                color: "#9CA3AF",
+                cursor: "pointer",
+                padding: 4,
               }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
-            </div>
-            <div>
-              <h1 style={{ fontSize: "0.95rem", fontWeight: 700, margin: 0, lineHeight: 1.2, color: "#111827", letterSpacing: "-0.01em" }}>
-                CATMIN
-              </h1>
-              <p style={{ fontSize: "0.7rem", color: "#9CA3AF", margin: 0 }}>Wedding Admin</p>
-            </div>
+            </button>
           </div>
 
           {/* Nav Items List */}
@@ -242,7 +328,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* User Profile Footer Card */}
-        <div style={{ padding: "0.85rem 1rem", borderTop: "1px solid #F3F4F6" }}>
+        <div style={{ padding: "0.85rem 1rem", borderTop: "1px solid #F3F4F6", marginTop: "auto" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}>
             <div
               style={{
@@ -292,8 +378,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </aside>
 
       {/* RIGHT MAIN CONTENT AREA */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        {/* TOP HEADER BAR (CATMIN Exact Structure: Search on Left, Theme / Globe / Avatar / Live site on Right, No Notifications) */}
+      <div className="admin-main-wrap">
+        {/* TOP HEADER BAR */}
         <header
           style={{
             height: 56,
@@ -303,48 +389,72 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             alignItems: "center",
             justifyContent: "space-between",
             padding: "0 1.5rem",
-            position: "sticky",
-            top: 0,
+            flexShrink: 0,
             zIndex: 40,
           }}
         >
-          {/* Left Search Bar with clean monochrome SVG icon */}
-          <div style={{ position: "relative", width: 260 }}>
-            <span
+          {/* Left section: Hamburger button (on mobile) & Search Bar */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              className="admin-mobile-toggle"
+              aria-label="Toggle Navigation Menu"
               style={{
-                position: "absolute",
-                left: 10,
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#9CA3AF",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Type to search..."
-              style={{
-                width: "100%",
-                padding: "0.45rem 0.75rem 0.45rem 2.1rem",
-                background: "#F9FAFB",
+                background: "transparent",
                 border: "1px solid #E5E7EB",
                 borderRadius: 6,
-                fontSize: "0.82rem",
-                color: "#111827",
-                outline: "none",
+                padding: "0.45rem",
+                color: "#374151",
+                cursor: "pointer",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+
+            <div style={{ position: "relative", width: 240 }}>
+              <span
+                style={{
+                  position: "absolute",
+                  left: 10,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "#9CA3AF",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Type to search..."
+                style={{
+                  width: "100%",
+                  padding: "0.45rem 0.75rem 0.45rem 2.1rem",
+                  background: "#F9FAFB",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 6,
+                  fontSize: "0.82rem",
+                  color: "#111827",
+                  outline: "none",
+                }}
+              />
+            </div>
           </div>
 
-          {/* Right Header Icons (Moon / Globe / Live Site / Logout - NO NOTIFICATION BELL) */}
+          {/* Right Header Icons */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             {/* Live Web Link */}
             <a
@@ -402,8 +512,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </header>
 
-        {/* MAIN BODY WRAPPER */}
-        <main style={{ flex: 1, padding: "1.75rem", overflowY: "auto" }}>{children}</main>
+        {/* MAIN BODY WRAPPER (Exclusively scrolls the dashboard content) */}
+        <main className="admin-main-content">{children}</main>
       </div>
     </div>
   );
