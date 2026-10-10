@@ -9,13 +9,13 @@ export default function ClosingSection() {
     groom: weddingData.groom.name,
     bride: weddingData.bride.name,
     displayDate: weddingData.akad.displayDate,
-    closingPhoto: "/dita.jpeg",
+    closingPhoto: "/uploads/mempelai_sherly_1791478061860.jpeg",
     quoteText: weddingData.closingQuote.text,
     quoteSource: weddingData.closingQuote.source,
   });
 
   useEffect(() => {
-    fetch("/api/settings")
+    fetch("/api/settings", { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => {
         if (d.success && d.data?.settings) {
@@ -33,7 +33,7 @@ export default function ClosingSection() {
             groom: groom || weddingData.groom.name,
             bride: bride || weddingData.bride.name,
             displayDate: s.akad_display_date || s.cover_date_text || weddingData.akad.displayDate,
-            closingPhoto: s.closing_photo_url || "/dita.jpeg",
+            closingPhoto: s.closing_photo_url || "/uploads/mempelai_sherly_1791478061860.jpeg",
             quoteText: s.closing_quote_text || weddingData.closingQuote.text,
             quoteSource: s.closing_quote_source || weddingData.closingQuote.source,
           });

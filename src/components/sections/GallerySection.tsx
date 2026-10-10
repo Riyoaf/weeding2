@@ -13,25 +13,24 @@ interface GalleryItem {
 
 const GALLERY_ITEMS: GalleryItem[] = [
   {
-    id: 1,
-    image: "/dita.jpeg",
+    id: 9,
+    image: "/uploads/mempelai_sherly_1791474620669.jpeg",
     isFeatured: true,
   },
   {
-    id: 2,
-    image: "/gallery_cincin.jpg",
+    id: 6,
+    image: "/uploads/mempelai_1_1791474574640.jpeg",
+    isFeatured: false,
   },
   {
-    id: 3,
-    image: "/gallery_melati.jpg",
+    id: 7,
+    image: "/uploads/mempelai_2_1791474594703.jpeg",
+    isFeatured: false,
   },
   {
-    id: 4,
-    image: "/gallery_batik.jpg",
-  },
-  {
-    id: 5,
-    image: "/dita 2.jpeg",
+    id: 8,
+    image: "/uploads/mempelai_3_1791474604158.jpeg",
+    isFeatured: false,
   },
 ];
 
@@ -40,17 +39,33 @@ export default function GallerySection() {
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/settings")
+    // 1. Immediately hydrate from localStorage if available
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("wedding_gallery_items");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setItems(parsed);
+          }
+        } catch (_) {}
+      }
+    }
+
+    // 2. Fetch fresh gallery items from API
+    fetch("/api/settings", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && Array.isArray(data.data.galleryItems) && data.data.galleryItems.length > 0) {
-          setItems(
-            data.data.galleryItems.map((g: any) => ({
-              id: g.id,
-              image: g.image_url,
-              isFeatured: g.is_featured,
-            }))
-          );
+        if (data.success && Array.isArray(data.data?.galleryItems) && data.data.galleryItems.length > 0) {
+          const mapped = data.data.galleryItems.map((g: any) => ({
+            id: g.id,
+            image: g.image_url,
+            isFeatured: g.is_featured,
+          }));
+          setItems(mapped);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("wedding_gallery_items", JSON.stringify(mapped));
+          }
         }
       })
       .catch(() => {});

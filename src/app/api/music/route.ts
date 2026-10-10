@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import { sql } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const urlParam = req.nextUrl.searchParams.get("url") || req.nextUrl.searchParams.get("file");
