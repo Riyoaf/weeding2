@@ -19,10 +19,20 @@ async function ensureTableExists() {
   }
 }
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // GET: Fetch all wishes
 export async function GET() {
   if (!sql) {
-    return NextResponse.json({ success: false, data: [], message: "DATABASE_URL is not set" });
+    return NextResponse.json(
+      { success: false, data: [], message: "DATABASE_URL is not set" },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   }
 
   try {
@@ -32,10 +42,25 @@ export async function GET() {
       FROM wishes
       ORDER BY created_at DESC;
     `;
-    return NextResponse.json({ success: true, data: rows });
+    return NextResponse.json(
+      { success: true, data: rows },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("Neon DB GET error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: error.message },
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   }
 }
 
@@ -81,9 +106,21 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: false, message: "ID ucapan tidak ditemukan" }, { status: 400 });
     }
 
-    await sql`DELETE FROM wishes WHERE id = ${parseInt(id)}`;
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      return NextResponse.json({ success: false, message: "ID ucapan tidak valid" }, { status: 400 });
+    }
 
-    return NextResponse.json({ success: true, message: "Ucapan berhasil dihapus" });
+    await sql`DELETE FROM wishes WHERE id = ${numericId};`;
+
+    return NextResponse.json(
+      { success: true, message: "Ucapan berhasil dihapus" },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("Neon DB DELETE error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

@@ -19,7 +19,7 @@ export default function AdminUcapanPage() {
 
   const fetchWishes = async () => {
     try {
-      const res = await fetch("/api/wishes");
+      const res = await fetch("/api/wishes", { cache: "no-store" });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setWishes(data.data);
@@ -37,11 +37,18 @@ export default function AdminUcapanPage() {
     if (!confirm("Apakah Anda yakin ingin menghapus ucapan ini?")) return;
 
     try {
-      const res = await fetch(`/api/wishes?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/wishes?id=${id}`, {
+        method: "DELETE",
+        cache: "no-store",
+      });
       const data = await res.json();
       if (data.success) {
         setMessage({ type: "success", text: "Ucapan berhasil dihapus." });
+        // Hapus langsung dari state agar UI instan terupdate
+        setWishes((prev) => prev.filter((w) => w.id !== id));
         fetchWishes();
+      } else {
+        setMessage({ type: "error", text: data.message || "Gagal menghapus ucapan" });
       }
     } catch (err) {
       setMessage({ type: "error", text: "Gagal menghapus: " + (err as Error).message });

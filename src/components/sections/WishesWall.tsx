@@ -135,24 +135,26 @@ export default function WishesWall() {
   useEffect(() => {
     async function loadWishes() {
       try {
-        const res = await fetch("/api/wishes");
+        const res = await fetch("/api/wishes", { cache: "no-store" });
         const json = await res.json();
-        if (json.success && json.data && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data)) {
           setWishes(json.data);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("wedding_wishes_neon", JSON.stringify(json.data));
+          }
           return;
         }
       } catch (err) {
         console.warn("Neon DB API fetch failed, checking localStorage fallback:", err);
-      }
-
-      // LocalStorage fallback
-      if (typeof window !== "undefined") {
-        const saved = localStorage.getItem("wedding_wishes_neon");
-        if (saved) {
-          try {
-            setWishes(JSON.parse(saved));
-          } catch (e) {
-            console.error("Local storage error:", e);
+        // LocalStorage fallback ONLY when API is unreachable
+        if (typeof window !== "undefined") {
+          const saved = localStorage.getItem("wedding_wishes_neon");
+          if (saved) {
+            try {
+              setWishes(JSON.parse(saved));
+            } catch (e) {
+              console.error("Local storage error:", e);
+            }
           }
         }
       }
@@ -389,7 +391,7 @@ export default function WishesWall() {
                     }}
                   >
                     <p style={{ color: "#F5F0E6", fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 600 }}>
-                      ✨ Terima kasih atas doa &amp; ucapannya!
+                      Terima kasih atas doa &amp; ucapannya!
                     </p>
                   </motion.div>
                 ) : (
@@ -437,27 +439,43 @@ export default function WishesWall() {
         </motion.div>
 
         {/* Wishes List Grid */}
-        <div
-          style={{
-            columns: "1",
-            gap: "1rem",
-            maxWidth: 700,
-            margin: "0 auto",
-            textAlign: "left",
-          }}
-          className="wishes-grid"
-        >
-          <style>{`
-            @media (min-width: 600px) {
-              .wishes-grid { columns: 2 !important; }
-            }
-          `}</style>
-          <AnimatePresence>
-            {wishes.map((wish, index) => (
-              <WishCard key={wish.id || index} wish={wish} index={index} />
-            ))}
-          </AnimatePresence>
-        </div>
+        {wishes.length === 0 ? (
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "0.88rem",
+              color: "rgba(245, 240, 230, 0.5)",
+              textAlign: "center",
+              fontStyle: "italic",
+              margin: "1rem auto 0",
+              maxWidth: 400,
+            }}
+          >
+            Belum ada ucapan doa. Jadilah yang pertama mengirimkan doa restu!
+          </p>
+        ) : (
+          <div
+            style={{
+              columns: "1",
+              gap: "1rem",
+              maxWidth: 700,
+              margin: "0 auto",
+              textAlign: "left",
+            }}
+            className="wishes-grid"
+          >
+            <style>{`
+              @media (min-width: 600px) {
+                .wishes-grid { columns: 2 !important; }
+              }
+            `}</style>
+            <AnimatePresence>
+              {wishes.map((wish, index) => (
+                <WishCard key={wish.id || index} wish={wish} index={index} />
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
     </section>
   );
