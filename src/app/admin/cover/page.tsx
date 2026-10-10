@@ -10,13 +10,13 @@ export default function AdminCoverPage() {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const [form, setForm] = useState({
-    cover_photo_url: "/dita 2.jpeg",
+    cover_photo_url: "/uploads/mempelai_sherly_1791473986141.jpeg",
     cover_badge_text: "Pernikahan dari",
-    cover_couple_name: "",
-    groom_name: "",
-    bride_name: "",
-    cover_date_text: "",
-    cover_bg_url: "/cover-bg.jpg",
+    cover_couple_name: "Sherly & Dimas",
+    groom_name: "Dimas",
+    bride_name: "Sherly",
+    cover_date_text: "Jumat, 16 Oktober 2026",
+    cover_bg_url: "/uploads/latar_1791136432133.png",
   });
 
   const [settingsFull, setSettingsFull] = useState<any>({});
@@ -40,13 +40,13 @@ export default function AdminCoverPage() {
           }
 
           setForm({
-            cover_photo_url: s.cover_photo_url || "/dita 2.jpeg",
+            cover_photo_url: s.cover_photo_url || "/uploads/mempelai_sherly_1791473986141.jpeg",
             cover_badge_text: s.cover_badge_text || "Pernikahan dari",
-            cover_couple_name: s.cover_couple_name || (groom && bride ? `${groom} & ${bride}` : "Afif & Dita"),
-            groom_name: groom || "Afif",
-            bride_name: bride || "Dita",
-            cover_date_text: s.cover_date_text || (s.akad_display_day && s.akad_display_date ? `${s.akad_display_day}, ${s.akad_display_date}` : "Sabtu, 12 September 2026"),
-            cover_bg_url: s.cover_bg_url || "/cover-bg.jpg",
+            cover_couple_name: s.cover_couple_name || (groom && bride ? `${groom} & ${bride}` : "Sherly & Dimas"),
+            groom_name: groom || "Dimas",
+            bride_name: bride || "Sherly",
+            cover_date_text: s.cover_date_text || (s.akad_display_day && s.akad_display_date ? `${s.akad_display_day}, ${s.akad_display_date}` : "Jumat, 16 Oktober 2026"),
+            cover_bg_url: s.cover_bg_url || "/uploads/latar_1791136432133.png",
           });
         }
       })

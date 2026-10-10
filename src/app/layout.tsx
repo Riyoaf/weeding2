@@ -48,6 +48,24 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Cookie&family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
           rel="stylesheet"
         />
+        {/* Preload critical cover images for 0ms instant display */}
+        <link
+          rel="preload"
+          as="image"
+          href="/uploads/mempelai_sherly_1791473986141.jpeg"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/wayang_frame.png"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/uploads/latar_1791136432133.png"
+        />
       </head>
       <body suppressHydrationWarning>{children}</body>
     </html>

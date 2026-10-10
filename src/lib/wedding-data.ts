@@ -6,65 +6,59 @@
 export const weddingData = {
   // --- PASANGAN ---
   groom: {
-    name: "Bagus",
-    fullName: "Bagus Purnama",
-    parentOf: "Putra dari Bapak Abdullah & Ibu Tumini Utami",
+    name: "Sherly",
+    fullName: "Sherly Virdayana",
+    parentOf: "Putri dari Bapak Sarjono & Ibu Hariyanti Astutik",
   },
   bride: {
-    name: "Dita",
-    fullName: "Dita Indah Cahyani",
-    parentOf: "Putri dari Bapak Maliki & Ibu Alm. Mulyani",
+    name: "Dimas",
+    fullName: "Dimas Rama Ardianto",
+    parentOf: "Putra dari Bapak Alfan Maharto & Ibu Hartatik",
   },
 
   // --- TANGGAL & WAKTU ---
   akad: {
-    date: "2026-09-12", // Format: YYYY-MM-DD
-    displayDate: "12 September 2026",
-    displayDay: "Sabtu",
-    time: "10.00 WIB",
+    date: "2026-10-16", // Format: YYYY-MM-DD
+    displayDate: "16 Oktober 2026",
+    displayDay: "Jumat",
+    time: "15.00 WIB",
     label: "Akad Nikah",
   },
   resepsi: {
-    date: "2026-09-12",
-    displayDate: "12 September 2026",
-    displayDay: "Sabtu",
+    date: "2026-10-16",
+    displayDate: "16 Oktober 2026",
+    displayDay: "Jumat",
     time: "15.00 WIB",
     label: "Resepsi Pernikahan",
   },
 
   // --- VENUE ---
   venue: {
-    name: "Kolam Pemancingan Panorama",
-    address: "Gang Kelinci, Dusun Karajan, Rt04/Rw02, Desa Cluring , Kec. Cluring",
-    lat: -8.432554547542662,
-    lng: 114.21325058263719,
-    googleMapsUrl: "https://maps.app.goo.gl/G2Ms2BDwSWHZQSpH8",
+    name: "Kediaman Mempelai Wanita",
+    address: "Tanjungrejo, RT/RW 01/04, Sembulung, Cluring",
+    lat: -8.454732810178411,
+    lng: 114.21402893606697,
+    googleMapsUrl: "https://maps.app.goo.gl/kV8LAuR6sCvYA5a37",
   },
 
   // --- AMPLOP DIGITAL ---
   bankAccounts: [
     {
       bank: "BCA",
-      accountNumber: "8980840400",
-      accountName: "Dita Indah Cahyani",
+      accountNumber: "8980811710",
+      accountName: "sherly virdayana",
       logo: "BCA",
-    }
-    // {
-    //   bank: "Mandiri",
-    //   accountNumber: "0987654321",
-    //   accountName: "Bagus Prasetyo",
-    //   logo: "Mandiri",
-    // },
+    },
   ],
 
   // --- QUOTE PENUTUP ---
   closingQuote: {
-    text: "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari (jenis) dirimu sendiri agar kamu merasa tenteram kepadanya. Dia menjadikan di antaramu rasa cinta dan kasih sayang.",
-    source: "QS. Ar-Rum: 21",
+    text: "Berikanlah maskawin kepada wanita (yang kamu nikahi) sebagai pemberian dengan penuh kerelaan. Kemudian jika mereka menyerahkan kepada kamu sebagian dari maskawin itu dengan senang hati, maka makanlah (ambillah) pemberian itu (sebagai makanan) yang sedap lagi baik akibatnya.",
+    source: "QS. An Nisa: 4",
   },
 
   // --- COUNTDOWN TARGET (sama dengan tanggal akad) ---
-  countdownTarget: "2026-09-12T10:00:00",
+  countdownTarget: "2026-10-16T15:00:00",
 };
 
 export type WeddingData = typeof weddingData;

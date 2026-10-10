@@ -18,13 +18,27 @@ export default function OpeningAnimation({
   const [phase, setPhase] = useState<"cover" | "envelope">("cover");
   const [coverData, setCoverData] = useState({
     badgeText: "Pernikahan dari",
-    photoUrl: "/dita 2.jpeg",
+    photoUrl: "/uploads/mempelai_sherly_1791473986141.jpeg",
     coupleName: `${weddingData.groom.name} & ${weddingData.bride.name}`,
     dateText: `${weddingData.akad.displayDay}, ${weddingData.akad.displayDate}`,
-    bgUrl: "/cover-bg.jpg",
+    bgUrl: "/uploads/latar_1791136432133.png",
   });
 
   useEffect(() => {
+    // 1. Immediately hydrate from localStorage cache for 0ms instant display
+    if (typeof window !== "undefined") {
+      const cached = localStorage.getItem("wedding_cover_settings");
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed && parsed.photoUrl) {
+            setCoverData((prev) => ({ ...prev, ...parsed }));
+          }
+        } catch (_) {}
+      }
+    }
+
+    // 2. Fetch fresh settings from database API
     fetch("/api/settings")
       .then((res) => res.json())
       .then((data) => {
@@ -37,13 +51,18 @@ export default function OpeningAnimation({
             s.cover_date_text?.trim() ||
             (s.akad_display_day && s.akad_display_date ? `${s.akad_display_day}, ${s.akad_display_date}` : `${weddingData.akad.displayDay}, ${weddingData.akad.displayDate}`);
 
-          setCoverData({
+          const updated = {
             badgeText: s.cover_badge_text || "Pernikahan dari",
-            photoUrl: s.cover_photo_url || "/dita 2.jpeg",
+            photoUrl: s.cover_photo_url || "/uploads/mempelai_sherly_1791473986141.jpeg",
             coupleName: couple,
             dateText: date,
-            bgUrl: s.cover_bg_url || "/cover-bg.jpg",
-          });
+            bgUrl: s.cover_bg_url || "/uploads/latar_1791136432133.png",
+          };
+
+          setCoverData(updated);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("wedding_cover_settings", JSON.stringify(updated));
+          }
         }
       })
       .catch((err) => console.error("Error loading cover settings:", err));
@@ -181,11 +200,16 @@ export default function OpeningAnimation({
                     alignItems: "center",
                     justifyContent: "center",
                     overflow: "hidden",
+                    backgroundColor: "#201A15",
                   }}
                 >
                   <img
                     src={coverData.photoUrl}
                     alt={`Profil ${coverData.coupleName}`}
+                    loading="eager"
+                    decoding="async"
+                    // @ts-ignore
+                    fetchPriority="high"
                     style={{
                       width: "100%",
                       height: "100%",
@@ -200,6 +224,10 @@ export default function OpeningAnimation({
                 <img
                   src="/wayang_frame.png"
                   alt="Ornamen Wayang"
+                  loading="eager"
+                  decoding="async"
+                  // @ts-ignore
+                  fetchPriority="high"
                   style={{
                     position: "absolute",
                     bottom: -2,
