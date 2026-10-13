@@ -19,7 +19,7 @@ export default function AdminMempelaiPage() {
     akad_display_date: "",
     akad_display_day: "",
     akad_time: "",
-    akad_label: "Akad Nikah",
+    akad_label: "Pawiwahan",
     resepsi_date: "",
     resepsi_display_date: "",
     resepsi_display_day: "",
@@ -244,13 +244,13 @@ export default function AdminMempelaiPage() {
           }}
         >
           <h2 style={{ fontSize: "1.05rem", fontWeight: 700, color: "#111827", marginTop: 0, marginBottom: "1.25rem", borderBottom: "1px solid #F3F4F6", paddingBottom: "0.75rem" }}>
-            Jadwal Akad &amp; Resepsi
+            Jadwal Upacara Pawiwahan &amp; Resepsi
           </h2>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
             {/* AKAD */}
             <div>
-              <h3 style={{ fontSize: "0.9rem", fontWeight: 600, color: "#374151", marginBottom: "0.85rem" }}>Akad Nikah</h3>
+              <h3 style={{ fontSize: "0.9rem", fontWeight: 600, color: "#374151", marginBottom: "0.85rem" }}>Upacara Pawiwahan</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
                 <div>
                   <label style={labelStyle}>Hari (misal: Sabtu)</label>
@@ -324,7 +324,7 @@ export default function AdminMempelaiPage() {
                 fontWeight: 500,
               }}
             >
-              Samakan dengan Jadwal Akad
+              Samakan dengan Jadwal Pawiwahan
             </button>
           </div>
 

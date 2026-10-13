@@ -218,11 +218,25 @@ export default function ClosingSection() {
               color: "#D1CCC2",
               lineHeight: 1.75,
               maxWidth: 480,
-              margin: "0 auto 2rem",
+              margin: "0 auto 1.25rem",
             }}
           >
             Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila
             Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.
+          </p>
+
+          <p
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(1.05rem, 2.5vw, 1.3rem)",
+              color: "#C9A96E",
+              fontStyle: "italic",
+              letterSpacing: "0.06em",
+              margin: "0 auto 2rem",
+              textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+            }}
+          >
+            Om Shanti, Shanti, Shanti, Om
           </p>
 
           <p

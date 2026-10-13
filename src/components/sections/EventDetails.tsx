@@ -256,7 +256,7 @@ export default function EventDetails() {
           const s = data.data.settings;
           setEventData({
             akad: {
-              label: s.akad_label || weddingData.akad.label,
+              label: (s.akad_label === "Akad Nikah" ? "Pawiwahan" : (s.akad_label || "Pawiwahan")),
               displayDay: s.akad_display_day || weddingData.akad.displayDay,
               displayDate: s.akad_display_date || weddingData.akad.displayDate,
               time: s.akad_time || weddingData.akad.time,
@@ -392,17 +392,31 @@ export default function EventDetails() {
             Hari Istimewa Kami
           </h2>
           <div className="gold-line-lg" style={{ margin: "0 auto 0.75rem" }} />
+          <h3
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(1.2rem, 2.8vw, 1.55rem)",
+              fontWeight: 600,
+              color: "#C9A96E",
+              fontStyle: "italic",
+              letterSpacing: "0.05em",
+              marginBottom: "0.45rem",
+              textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+            }}
+          >
+            Om Swastyastu
+          </h3>
           <p
             style={{
               fontFamily: "'Montserrat', sans-serif",
               fontSize: "clamp(0.78rem, 2vw, 0.85rem)",
               color: "#D1CCC2",
-              maxWidth: 380,
+              maxWidth: 440,
               margin: "0 auto",
-              lineHeight: 1.6,
+              lineHeight: 1.65,
             }}
           >
-            Dengan segenap cinta dan kebahagiaan, kami mengundang Bapak/Ibu/Saudara/i untuk turut hadir dan memberikan doa restu.
+            Atas Asung Kertha Wara Nugraha Ida Sang Hyang Widhi Wasa, dengan penuh rasa syukur dan kebahagiaan kami mengundang Bapak/Ibu/Saudara/i untuk turut hadir dan memberikan doa restu pada hari istimewa kami.
           </p>
         </motion.div>
 

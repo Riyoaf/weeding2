@@ -18,7 +18,7 @@ const initialSampleWishes: WishItem[] = [
   //   name: "Budi & Ani",
   //   attendance: "Hadir",
   //   message:
-  //     "Selamat menempuh hidup baru. Semoga kalian selalu berbahagia, saling melengkapi, dan diridhai Allah SWT. Aamiin.",
+  //     "Om Swastyastu. Selamat menempuh hidup baru. Semoga senantiasa langgeng, bahagia, dan dalam lindungan Ida Sang Hyang Widhi Wasa.",
   //   date: "8 Sept 2025",
   // },
   // {
@@ -26,7 +26,7 @@ const initialSampleWishes: WishItem[] = [
   //   name: "Keluarga Susanto",
   //   attendance: "Hadir",
   //   message:
-  //     "Barakallahu lakuma wa baraka 'alaikuma wa jama'a bainakuma fi khair. Semoga rumah tangga kalian menjadi surga di dunia.",
+  //     "Selamat berbahagia menempuh hidup baru. Semoga cinta kasih kalian abadi dan selalu dilimpahi kedamaian serta keharmonisan.",
   //   date: "9 Sept 2025",
   // },
   // {

@@ -17,7 +17,7 @@ async function ensureExtraColumns() {
         akad_display_date TEXT NOT NULL DEFAULT '16 Oktober 2026',
         akad_display_day TEXT NOT NULL DEFAULT 'Jumat',
         akad_time TEXT NOT NULL DEFAULT '15.00 WIB',
-        akad_label TEXT NOT NULL DEFAULT 'Akad Nikah',
+        akad_label TEXT NOT NULL DEFAULT 'Pawiwahan',
         resepsi_date TEXT NOT NULL DEFAULT '2026-10-16',
         resepsi_display_date TEXT NOT NULL DEFAULT '16 Oktober 2026',
         resepsi_display_day TEXT NOT NULL DEFAULT 'Jumat',
@@ -28,8 +28,8 @@ async function ensureExtraColumns() {
         venue_lat DOUBLE PRECISION NOT NULL DEFAULT -8.454732810178411,
         venue_lng DOUBLE PRECISION NOT NULL DEFAULT 114.21402893606697,
         google_maps_url TEXT NOT NULL DEFAULT 'https://maps.app.goo.gl/kV8LAuR6sCvYA5a37',
-        closing_quote_text TEXT NOT NULL DEFAULT 'Berikanlah maskawin kepada wanita (yang kamu nikahi) sebagai pemberian dengan penuh kerelaan. Kemudian jika mereka menyerahkan kepada kamu sebagian dari maskawin itu dengan senang hati, maka makanlah (ambillah) pemberian itu (sebagai makanan) yang sedap lagi baik akibatnya.',
-        closing_quote_source TEXT NOT NULL DEFAULT 'QS. An Nisa: 4',
+        closing_quote_text TEXT NOT NULL DEFAULT '"Anyonyasyawyabhicaro, Bhawedamaranantikah.\nEsa dharmah samasena, Jneyah stripumsayoh parah."\n\nHendaknya hubungan suami-isteri dilandasi oleh kesetiaan dan berlangsung hingga selamanya. Singkatnya kesetiaanlah yang menjadi hukum yang tertinggi dalam membina keharmonisan sebuah keluarga.',
+        closing_quote_source TEXT NOT NULL DEFAULT 'Weda Smrthi : IX.101',
         music_url TEXT NOT NULL DEFAULT '/uploads/ASMARANALA_Lirik_-_Wahyu_F_Giri_ft_Adinda_Anggun_1791522660241.mp3',
         cover_photo_url TEXT DEFAULT '/uploads/mempelai_sherly_1791473986141.jpeg',
         cover_badge_text TEXT DEFAULT 'Pernikahan dari',
@@ -49,7 +49,7 @@ async function ensureExtraColumns() {
     if (check.length === 0) {
       await sql`
         INSERT INTO wedding_settings (id, groom_name, bride_name, closing_quote_text, closing_quote_source)
-        VALUES (1, 'Sherly', 'Dimas', 'Berikanlah maskawin kepada wanita (yang kamu nikahi)...', 'QS. An Nisa: 4')
+        VALUES (1, 'Sherly', 'Dimas', '"Anyonyasyawyabhicaro, Bhawedamaranantikah.\nEsa dharmah samasena, Jneyah stripumsayoh parah."\n\nHendaknya hubungan suami-isteri dilandasi oleh kesetiaan dan berlangsung hingga selamanya. Singkatnya kesetiaanlah yang menjadi hukum yang tertinggi dalam membina keharmonisan sebuah keluarga.', 'Weda Smrthi : IX.101')
         ON CONFLICT (id) DO NOTHING;
       `;
     }
@@ -80,7 +80,7 @@ const fallbackSettings = {
   akad_display_date: "16 Oktober 2026",
   akad_display_day: "Jumat",
   akad_time: "15.00 WIB",
-  akad_label: "Akad Nikah",
+  akad_label: "Pawiwahan",
   resepsi_date: "2026-10-16",
   resepsi_display_date: "16 Oktober 2026",
   resepsi_display_day: "Jumat",
@@ -91,8 +91,8 @@ const fallbackSettings = {
   venue_lat: -8.454732810178411,
   venue_lng: 114.21402893606697,
   google_maps_url: "https://maps.app.goo.gl/kV8LAuR6sCvYA5a37",
-  closing_quote_text: "Berikanlah maskawin kepada wanita (yang kamu nikahi) sebagai pemberian dengan penuh kerelaan. Kemudian jika mereka menyerahkan kepada kamu sebagian dari maskawin itu dengan senang hati, maka makanlah (ambillah) pemberian itu (sebagai makanan) yang sedap lagi baik akibatnya.",
-  closing_quote_source: "QS. An Nisa: 4",
+  closing_quote_text: "\"Anyonyasyawyabhicaro, Bhawedamaranantikah.\nEsa dharmah samasena, Jneyah stripumsayoh parah.\"\n\nHendaknya hubungan suami-isteri dilandasi oleh kesetiaan dan berlangsung hingga selamanya. Singkatnya kesetiaanlah yang menjadi hukum yang tertinggi dalam membina keharmonisan sebuah keluarga.",
+  closing_quote_source: "Weda Smrthi : IX.101",
   music_url: "/uploads/ASMARANALA_Lirik_-_Wahyu_F_Giri_ft_Adinda_Anggun_1791522660241.mp3",
   cover_photo_url: "/uploads/mempelai_sherly_1791473986141.jpeg",
   cover_badge_text: "Pernikahan dari",
@@ -188,7 +188,7 @@ export async function PUT(request: Request) {
       akad_display_date = "",
       akad_display_day = "",
       akad_time = "",
-      akad_label = "Akad Nikah",
+      akad_label = "Pawiwahan",
       resepsi_date = "",
       resepsi_display_date = "",
       resepsi_display_day = "",

@@ -22,7 +22,7 @@ export const weddingData = {
     displayDate: "16 Oktober 2026",
     displayDay: "Jumat",
     time: "15.00 WIB",
-    label: "Akad Nikah",
+    label: "Pawiwahan",
   },
   resepsi: {
     date: "2026-10-16",
@@ -53,8 +53,9 @@ export const weddingData = {
 
   // --- QUOTE PENUTUP ---
   closingQuote: {
-    text: "Berikanlah maskawin kepada wanita (yang kamu nikahi) sebagai pemberian dengan penuh kerelaan. Kemudian jika mereka menyerahkan kepada kamu sebagian dari maskawin itu dengan senang hati, maka makanlah (ambillah) pemberian itu (sebagai makanan) yang sedap lagi baik akibatnya.",
-    source: "QS. An Nisa: 4",
+    text:
+      "\"Anyonyasyawyabhicaro, Bhawedamaranantikah.\nEsa dharmah samasena, Jneyah stripumsayoh parah.\"\n\nHendaknya hubungan suami-isteri dilandasi oleh kesetiaan dan berlangsung hingga selamanya. Singkatnya kesetiaanlah yang menjadi hukum yang tertinggi dalam membina keharmonisan sebuah keluarga.",
+    source: "Weda Smrthi : IX.101",
   },
 
   // --- COUNTDOWN TARGET (sama dengan tanggal akad) ---
