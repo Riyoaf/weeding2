@@ -2,19 +2,57 @@ import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 
 async function ensureExtraColumns() {
+  if (!sql) return;
   try {
     await sql`
-      ALTER TABLE wedding_settings 
-      ADD COLUMN IF NOT EXISTS cover_photo_url TEXT DEFAULT '/dita 2.jpeg',
-      ADD COLUMN IF NOT EXISTS cover_badge_text TEXT DEFAULT 'Pernikahan dari',
-      ADD COLUMN IF NOT EXISTS cover_couple_name TEXT DEFAULT '',
-      ADD COLUMN IF NOT EXISTS cover_date_text TEXT DEFAULT '',
-      ADD COLUMN IF NOT EXISTS cover_bg_url TEXT DEFAULT '/cover-bg.jpg',
-      ADD COLUMN IF NOT EXISTS countdown_target TEXT DEFAULT '2026-09-12T10:00:00',
-      ADD COLUMN IF NOT EXISTS countdown_title TEXT DEFAULT 'Menuju Hari Bahagia',
-      ADD COLUMN IF NOT EXISTS closing_photo_url TEXT DEFAULT '/dita.jpeg',
-      ADD COLUMN IF NOT EXISTS music_start_second INTEGER DEFAULT 0
+      CREATE TABLE IF NOT EXISTS wedding_settings (
+        id INT PRIMARY KEY DEFAULT 1,
+        groom_name TEXT NOT NULL DEFAULT 'Sherly',
+        groom_full_name TEXT NOT NULL DEFAULT 'Sherly Virdayana',
+        groom_parent_of TEXT NOT NULL DEFAULT 'Putri dari Bapak Sarjono & Ibu Hariyanti Astutik',
+        bride_name TEXT NOT NULL DEFAULT 'Dimas',
+        bride_full_name TEXT NOT NULL DEFAULT 'Dimas Rama Ardianto',
+        bride_parent_of TEXT NOT NULL DEFAULT 'Putra dari Bapak Alfan Maharto & Ibu Hartatik',
+        akad_date TEXT NOT NULL DEFAULT '2026-10-16',
+        akad_display_date TEXT NOT NULL DEFAULT '16 Oktober 2026',
+        akad_display_day TEXT NOT NULL DEFAULT 'Jumat',
+        akad_time TEXT NOT NULL DEFAULT '15.00 WIB',
+        akad_label TEXT NOT NULL DEFAULT 'Akad Nikah',
+        resepsi_date TEXT NOT NULL DEFAULT '2026-10-16',
+        resepsi_display_date TEXT NOT NULL DEFAULT '16 Oktober 2026',
+        resepsi_display_day TEXT NOT NULL DEFAULT 'Jumat',
+        resepsi_time TEXT NOT NULL DEFAULT '15.00 WIB',
+        resepsi_label TEXT NOT NULL DEFAULT 'Resepsi Pernikahan',
+        venue_name TEXT NOT NULL DEFAULT 'Kediaman Mempelai Wanita',
+        venue_address TEXT NOT NULL DEFAULT 'Tanjungrejo, RT/RW 01/04, Sembulung, Cluring',
+        venue_lat DOUBLE PRECISION NOT NULL DEFAULT -8.454732810178411,
+        venue_lng DOUBLE PRECISION NOT NULL DEFAULT 114.21402893606697,
+        google_maps_url TEXT NOT NULL DEFAULT 'https://maps.app.goo.gl/kV8LAuR6sCvYA5a37',
+        closing_quote_text TEXT NOT NULL DEFAULT 'Berikanlah maskawin kepada wanita (yang kamu nikahi) sebagai pemberian dengan penuh kerelaan. Kemudian jika mereka menyerahkan kepada kamu sebagian dari maskawin itu dengan senang hati, maka makanlah (ambillah) pemberian itu (sebagai makanan) yang sedap lagi baik akibatnya.',
+        closing_quote_source TEXT NOT NULL DEFAULT 'QS. An Nisa: 4',
+        music_url TEXT NOT NULL DEFAULT '/uploads/ASMARANALA_Lirik_-_Wahyu_F_Giri_ft_Adinda_Anggun_1791522660241.mp3',
+        cover_photo_url TEXT DEFAULT '/uploads/mempelai_sherly_1791473986141.jpeg',
+        cover_badge_text TEXT DEFAULT 'Pernikahan dari',
+        cover_couple_name TEXT DEFAULT 'Sherly & Dimas',
+        cover_date_text TEXT DEFAULT 'Jumat, 16 Oktober 2026',
+        cover_bg_url TEXT DEFAULT '/uploads/latar_1791136432133.png',
+        countdown_target TEXT DEFAULT '2026-10-16T15:00',
+        countdown_title TEXT DEFAULT 'Menuju Hari Bahagia',
+        closing_photo_url TEXT DEFAULT '/uploads/mempelai_sherly_1791478061860.jpeg',
+        music_start_second INTEGER DEFAULT 238,
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
     `;
+
+    // Ensure row 1 exists
+    const check = await sql`SELECT id FROM wedding_settings WHERE id = 1`;
+    if (check.length === 0) {
+      await sql`
+        INSERT INTO wedding_settings (id, groom_name, bride_name, closing_quote_text, closing_quote_source)
+        VALUES (1, 'Sherly', 'Dimas', 'Berikanlah maskawin kepada wanita (yang kamu nikahi)...', 'QS. An Nisa: 4')
+        ON CONFLICT (id) DO NOTHING;
+      `;
+    }
   } catch (e) {
     console.error("Migration error (safe to ignore if already altered):", e);
   }
