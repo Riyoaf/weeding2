@@ -321,7 +321,6 @@ export default function AdminOverviewPage() {
             {[
               { label: "Mempelai & Acara", pct: 100 },
               { label: "Galeri Foto", pct: 90 },
-              { label: "Amplop Digital", pct: 86 },
               { label: "Musik & Kutipan", pct: 83 },
             ].map((item, idx) => (
               <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.75rem" }}>

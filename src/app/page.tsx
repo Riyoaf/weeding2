@@ -8,7 +8,6 @@ import CountdownTimer from "@/components/sections/CountdownTimer";
 import EventDetails from "@/components/sections/EventDetails";
 import MapSection from "@/components/sections/MapSection";
 import GallerySection from "@/components/sections/GallerySection";
-import AmpllopDigital from "@/components/sections/AmpllopDigital";
 import WishesWall from "@/components/sections/WishesWall";
 import ClosingSection from "@/components/sections/ClosingSection";
 import MusicPlayer from "@/components/ui/MusicPlayer";
@@ -79,9 +78,6 @@ export default function HomePage() {
 
         {/* 5. Peta Lokasi GIS */}
         <MapSection />
-
-        {/* 6. Amplop Digital */}
-        <AmpllopDigital />
 
         {/* 7. Ucapan & Doa */}
         <WishesWall />

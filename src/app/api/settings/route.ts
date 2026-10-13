@@ -92,7 +92,8 @@ export async function GET() {
     await ensureExtraColumns();
 
     const settingsRes = await sql`SELECT * FROM wedding_settings WHERE id = 1`;
-    const bankAccountsRes = await sql`SELECT * FROM bank_accounts ORDER BY id ASC`;
+    let bankAccountsRes = [];
+    try { bankAccountsRes = await sql`SELECT * FROM bank_accounts ORDER BY id ASC`; } catch (_) {}
     const galleryRes = await sql`SELECT * FROM gallery_items ORDER BY is_featured DESC, display_order ASC, id ASC`;
 
     const settings = settingsRes[0] || fallbackSettings;
