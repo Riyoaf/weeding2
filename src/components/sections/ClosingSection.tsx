@@ -162,6 +162,7 @@ export default function ClosingSection() {
                 marginBottom: "1rem",
                 fontFamily: "'Playfair Display', serif",
                 fontSize: "clamp(0.88rem, 2.2vw, 1.15rem)",
+                whiteSpace: "pre-line",
               }}
             >
               {couple.quoteText}
